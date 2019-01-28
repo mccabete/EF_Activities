@@ -35,6 +35,39 @@ plot(time,n,ylim=c(0,12),lwd=3,type='l',
 
 1. Generate plots of the logistic growth model at r = 1.95, 2.05, 2.5, and 2.8 Describe the trajectory observed in each case.
 
+```{r}
+
+## New and differnt R's
+
+new_r <- c(1, 1.95, 2.05, 2.5, 2.8)
+n = rep(n0,NT)
+lines <- as.data.frame(n)
+for (i in seq_along(new_r)){
+      ## vector to store results
+for(t in 2:NT){
+  n[t] = n[t-1] + new_r[i]*n[t-1]*(1-n[t-1]/K)
+}
+  
+  lines <- cbind(lines, n)
+}
+lines <- lines[,-1]
+names(lines) <- new_r
+plot(time,lines[,1],ylim=c(0,12),lwd=3,type='l',
+     bty='l',cex.lab=1.5,
+     xlab="Time",ylab="Population Size")
+lines(lines[,2],ylim=c(0,12),lwd=3,type='l',
+     bty='l',cex.lab=1.5, col = "red")
+lines(lines[,3],ylim=c(0,12),lwd=3,type='l',
+     bty='l',cex.lab=1.5, col = "blue")
+lines(lines[,4],ylim=c(0,12),lwd=3,type='l',
+     bty='l',cex.lab=1.5, col = "green")
+lines(lines[,5],ylim=c(0,12),lwd=3,type='l',
+     bty='l',cex.lab=1.5, col = "orange")
+
+
+
+```
+As r gets larger, the point of time where the the population asymptotes moves sooner in time, and the oscillation around that asymptote become more extreme. 
 
 Probability distributions in R
 ------------------------------
@@ -139,6 +172,20 @@ This example demonstrates that as the number of random draws from a probability 
 ### Problems
 
 2. Choose another probability distribution and generate graphs of the probability density function, the cumulative distribution function, the quantile function, and a histogram of samples from that distribution.
+
+I chose Wilcoxon, because I don't think I've ever heard of it before. 
+
+```{r}
+## PDF
+x = seq(-5,5,by=0.1)
+plot(x,dwilcox(x, 5,5),type='l')  		## that’s a lowercase “L” for “line”
+				          	## add a line to indicate the mean (“v” is for “vertical”)
+lines(x,dwilcox(x,7,5),col=2)			## try changing the mean (“col” sets the color)
+
+lines(x,dwilcox(x,10,5),col=3)	## try changing the mean and standard dev
+
+
+```
 
 Monte Carlo Simulation
 ----------------------
