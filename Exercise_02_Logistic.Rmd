@@ -219,6 +219,20 @@ It turns out that this specific transformation (x^2 of a standard Normal), has a
 
 3. Numerically transform a lognormal(meanlog=0,sdlog=0.5) through sin(x) using Monte Carlo simulation. Include histograms of the original and transformed distributions. Report the mean, median, and 95% CI for both distributions and indicate these values on the histograms.
 
+```{r}
+x = rlnorm(10000,0,0.5)
+y = sin(x)
+
+hist(x,main="Original distribution",breaks=40)
+abline(v=quantile(x,c(0.025,0.5,0.975)),lty=c(2,1,2),lwd=3,col="orange")
+abline(v=mean(x),col="red",lwd=3,lty=3)
+
+hist(y,main="Transformed distribution",breaks=40)
+abline(v=quantile(y,c(0.025,0.5,0.975)),lty=c(2,1,2),lwd=3,col="orange")
+abline(v=mean(y),col="red",lwd=3,lty=3)
+
+```
+
 Parameter error
 ---------------
 
@@ -255,7 +269,26 @@ n.stats = apply(n,2,quantile,c(0.025,0.5,0.975))
 
 4. Plot histograms of the samples of r and K used for the simulation.
 
+```{r}
+hist(rE)
+
+hist(KE)
+```
 5. Plot a sample of 10 different trajectories (through time) from your ensemble (on one graph).
+
+```{r}
+seqx<- 1:30
+plot(n[11,], x= seqx, type = "l")
+lines(n[800,], x= seqx, col = "red")
+lines(n[700,], x= seqx, col = "red")
+lines(n[600,], x= seqx, col = "red")
+lines(n[500,], x= seqx, col = "red")
+lines(n[400,], x= seqx, col = "red")
+lines(n[300,], x= seqx, col = "red")
+lines(n[200,], x= seqx, col = "red")
+lines(n[100,], x= seqx, col = "red")
+lines(n[1000,], x= seqx, col = "red")
+```
 
 6. Plot a histogram of your population forecast at time = 15.
 
