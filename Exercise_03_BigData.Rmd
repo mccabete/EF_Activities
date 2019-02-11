@@ -63,6 +63,29 @@ For more information, please visit http://www.google.org/flutrends
 Using the US Forest Service's Forest Inventory and Analysis (FIA) data set, plot the rank vs log(abundance) curve for tree seedling counts from Rhode Island. Data is available at https://apps.fs.usda.gov/fia/datamart/CSV/RI_SEEDLING.csv and the relevant columns are TREECOUNT (raw seedling counts) and SPCD (species codes). 
 Hints: tapply, sum, na.rm=TRUE, sort, decreasing=TRUE, log='y'
 
+```{r}
+fia <- read.csv("https://apps.fs.usda.gov/fia/datamart/CSV/RI_SEEDLING.csv", header = TRUE)
+```
+
+```{r}
+species <- unique(fia$SPCD)
+total <- rep(NA, length(species))
+for( i in seq_along(species)){
+ 
+   total[i] <-sum(na.omit(fia[fia$SPCD == species[i],]$TREECOUNT) )
+   
+  
+}
+
+abundance <- cbind(species, total)
+
+abundance <- sort(abundance, decreasing = TRUE)
+
+plot(sort(species, decreasing = TRUE), log(total))
+
+```
+
+Based on this plot, it looks like a rough rank abundance might have a rough correlaion between log abundance and rank. 
 
 Web Scraping
 ------------
@@ -82,6 +105,47 @@ recent <- fia_table[which(update > "2018/01/01"),]
 
 **Question 2:**
 Create a sorted table of how many FLUXNET eddy-covariance towers are in each country according to the website at http://fluxnet.fluxdata.org/sites/site-list-and-pages/. Hint: use substring to extract the country code from the overall FLUXNET ID code.
+
+```
+
+fluxnet <- getURL("http://fluxnet.fluxdata.org/sites/site-list-and-pages/?view=table")
+flux_table <- readHTMLTable(fluxnet, header = TRUE) # Doesn't work, comes in as null
+flux_table <- readHTMLList(fluxnet, header = TRUE) # Can get ehaders but no data?
+
+flux_table <- readHTMLList(fluxnet, header = TRUE)
+flux_table_parsed <- htmlParse("/Users/tess/Downloads/List_of_FLUXNET_2015_Sites.html") ## Get something with data, not sure hwo to manipulate it 
+flux_table <- readHTMLTable(flux_table_parsed) #Empty
+
+flux_table <- readHTMLTable("/Users/tess/Downloads/List_of_FLUXNET_2015_Sites.html")# Empty in same way
+
+flux_table <- readHTMLTable("/Users/tess/Downloads/List_of_FLUXNET_2015_Sites.html",as.data.frame = TRUE)
+
+
+ tableNodes = getNodeSet(flux_table_parsed, "//table")
+ tb = readHTMLTable(tableNodes) # Says that tableNodes is empty and also an XMLNodeSet? 
+
+
+```
+
+Hey Mike, 
+
+Sorry to report: I couldn't for the life of me figure out how to parse this table. Everything I tried came back an empty object. The closest I got was manuualy downloading it as an html and then using html parse to make an object. From there I couldn't figure out how to turn it into a useable table or table-like object. 
+
+If I could get the table to parse I would run somethign like this:
+
+```
+Country_IDS <- substr(fluxtable$site_id, 1, 2)
+abundance <- rep(NA, length(Country_IDS))
+
+for (i in 1:length(Country_IDS)){
+grep(Country_IDS[i], fluxtable$site_id)
+
+abundance[i] <- length(grep(Country_IDS[i], fluxtable$site_id))
+}
+
+plot(Country_IDs, abundance)
+
+```
 
 grep, system, RegExp
 --------------------
@@ -142,6 +206,13 @@ gsub("RI","VT",myCode[x])  ## substitute ALL: VT for RI
 
 **Question 3:** Within the object myCode, find all the lines that begin with the comment character, #.
 
+```{r}
+
+comments_only <- grep("#*", myCode)
+myCode[comments_only]
+
+```
+
 
 netCDF, wget
 ------------
@@ -155,7 +226,7 @@ system("wget http://flux.aos.wisc.edu/data/cheas/wlef/netcdf/US-PFa-WLEF-TallTow
 Next, lets open the file and look at what it contains
 ```{r}
 ## open the netCDF file
-wlef = nc_open("US-PFa-WLEF-TallTowerClean-2012-L0-vFeb2013.nc")
+wlef = nc_open("/Users/tess/Downloads/US-PFa-WLEF-TallTowerClean-2012-L0-vFeb2013.nc")
 print(wlef)    ## metadata
 ```
 
@@ -185,7 +256,7 @@ Alternative, if I just wanted to get a subset of air temperature data (e.g. 24 h
 
 ```{r}
 start = which(doy > 220)[1]
-wlef = nc_open("US-PFa-WLEF-TallTowerClean-2012-L0-vFeb2013.nc")
+wlef = nc_open("/Users/tess/Downloads/US-PFa-WLEF-TallTowerClean-2012-L0-vFeb2013.nc")
 TA = ncvar_get(wlef,"TA",c(3,start),c(1,24))
 plot(TA,type = 'l')
 nc_close(wlef)
@@ -197,6 +268,17 @@ nc_close(wlef)
 
 Similar to how we can point read.csv to the URL of a text file, you can open and manipulate netCDF files on remote servers if those servers support THREDDS/OpenDAP. Furthermore, these utilities let you grab just the part of the file that you need rather than the file in it's entirety. Using this approach, download and plot the air temperature data for Boston for 2004 that's located on the ORNL DAAC server `http://thredds.daac.ornl.gov/thredds/dodsC/ornldaac/1220/mstmip_driver_global_hd_climate_tair_2004_v1.nc4`.  The underlying file is quite large so make sure to grab just the subset you need. To do so you'll need to first grab the lat, lon, and time variables to find _which_ grid cell to grab for lat and lon and how many values to grab from time (i.e. _length_). 
 
+```{r}
+thredds <- nc_open("http://thredds.daac.ornl.gov/thredds/dodsC/ornldaac/1220/mstmip_driver_global_hd_climate_tair_2004_v1.nc4")
+lat <- 42.3601
+lon <- 71.0589
+time <- 1:30 # Chosen randomly. Not really sure how many tempurature data points we need here. Could also be the entire length of the document if you are interested in all the tempurature values in 2004. 
+
+tair <- ncvar_get(thredds,"tair", c(lon,lat,1), c(1,1,length(time)))
+
+plot(tair)
+
+```
 
 Using APIs
 ----------
@@ -230,6 +312,7 @@ if(file.exists(WC_file)){
 }
 subset$header
 head(subset$data)
+
 ```
 
 Here we extracted a 250m data products and looked +/ 1km in both directions, which gives us a 9x9 area and thus 81 pixels.
@@ -246,6 +329,12 @@ time = as.Date(names(EVI))
 ```
 
 **Question 5:** Plot EVI versus time and compare to the CO2 flux observations.
+
+```{r}
+plot(time, EVI)
+plot(doy,filter(NEE[i,],rep(1/24,24)),type='l',main=paste("Height =",height[i],"m"))
+```
+Comparing the MODIS graphs to the flux-tower graphs up above(but in reverse) the same overeall pattern is visible. You can see the growing season start up in the spring, and taper in the fall. 
 
 cron
 ----
@@ -281,4 +370,19 @@ Imagine you are working with the full FIA database and want to ensure that the d
 * Write out the pseudocode/outline for how to keep the files up to date
 * Write out what the cron table would look like to schedule this job (assume the update only needs to be done weekly)
 
+```
+# Chron FIA update script
 
+- Check if FIA database subset of interest has changes
+    - If yes: insert new entries into table
+              - If FIA subset deleted entries (ie our databse is the only record)
+                  - Quality flag local entry but do not delete
+              - send report of chagnes
+    - If no: Do nothing/ send automated report 
+ ```
+ Chron sudocode
+ ``` 
+    MAILTO=tmccabe@bu.edu
+* */ * * mon /home/scratch/dietze_lab/FIA/update_database.sh
+
+```
