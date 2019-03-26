@@ -13,10 +13,87 @@ For this activity we will look at data on mosquito abundance.  The data file “
 
 1.  Plot mosquito abundance as a function of time in a way that distinguishes the replicates and connects them through time (e.g. with lines, colors, or symbols)
 
+```{r}
+library(rjags)
+library(tidyverse)
+
+mosquito <- read.csv("/Users/tess/Documents/work/Ecoforecast_activities/data/Mosquito.csv", header = TRUE)
+library(tidyverse)
+mosquito$replicate <- as.character(mosquito$replicate)
+ggplot(mosquito)+ 
+  geom_point(aes(time, density, color = replicate))+
+  geom_line(aes(time, density, color = replicate))
+
+```
+
 2.	Write and run a JAGS model to fit the overall mean and standard deviation, reporting summary statistics for both. You can use the JAGS code you developed from activity 5 for this.
+
+It was super hard for me to think of an informed prior for this data. I'd already looked at it (the plot above), and don't know much about it. I added a zero to the precision in hopes that that would balance it out.
+
+```{r}
+
+sigma = 5  ## prior standard deviation
+data = list(X = c(mosquito$density), ## data
+            N = 50,
+            mu0 = 53, ## prior mean
+            s1 = sigma^2, ## prior precision
+            s2 = 2, 
+            #S = 1/27,
+            T1 = 1/185) ## data precision
+
+NormalMean = "
+model {
+S ~ dgamma(s1,s2) # Prior on variance
+mu ~ dnorm(mu0,T1) # prior on the mean 
+for(i in 1:N){
+    X[i] ~ dnorm(mu,S) # data model
+  }
+
+}
+"
+inits <- list()
+inits[[1]] <- list(mu = mean(mosquito$density))
+inits[[2]] <- list(mu = (1/2)*mean(mosquito$density))
+inits[[3]] <- list(mu = (1.5)*mean(mosquito$density))
+
+j.model   <- jags.model (file = textConnection(NormalMean),
+                             data = data,
+                             inits = inits,
+                             n.chains = 3)
+
+jags.out   <- coda.samples (model = j.model,
+                            variable.names = c("mu", "S"),
+                                n.iter = 18000)
+#gelman.diag(jags.out)
+
+GBR <- gelman.plot(jags.out)
+
+burnin = 3400                                ## determine convergence
+jags.burn <- window(jags.out,start=burnin)  ## remove burn-in
+plot(jags.burn)      
+
+acfplot(jags.burn)
+
+effectiveSize(jags.burn) # well over 5000
+
+```
+
+
 
 3.	Add posterior CI and PI to the plot.
 
+```{r}
+jags.mat <- as.matrix(jags.burn)
+quant <- as.numeric(quantile(jags.mat[,2], probs = c(0.975, 0.025)))
+#quant_var <- as.numeric(quantile(jags.mat[,2]+jags.mat[,1], probs = c(0.975, 0.025)))
+
+plot(density(jags.mat[,2]), main = "Density of Mu", xlim = c(-4, 18)) #Seems strongly influenced by my priors from JAGS
+abline(v = quant[1], col = "green")
+abline(v = quant[2], col = "green")
+abline(v = quant[1]-mean(jags.mat[,1]), col = "pink")
+abline(v = quant[2] + mean(jags.mat[,1]), col = "pink")
+
+```
 # Random time effect
 
 From the graphs in Task 1 it should be apparent that there is systematic year-to-year variability that is unexplained by just a simple mean.  Since at this point we don't know the cause of this variability we can begin by adding a random effect for year.  
@@ -36,6 +113,63 @@ In this chunk of code the expected value of the data X, `Ex`, varies with time, 
 
 3. Update the data model to reference the process model, `Ex[time[i]]`, instead of `mu`. Here we're assuming `i` is the counter in the loop over all the rows in the data and that `time` is an indexing variable used to look up the year for that particular row in the data. For example, if I loaded the raw data as `dat` this could be calculated as `time <- as.numeric(as.factor(dat$time))``
 
+```{r}
+
+sigma = 5  ## prior standard deviation
+data = list(X = c(mosquito$density), ## data
+            N = 50,
+            time = as.numeric(as.factor(mosquito$time)), 
+            NT = 10, 
+            mu0 = 53, ## prior mean
+            s1 = sigma^2, ## prior precision
+            s2 = 2, 
+            #S = 1/27,
+            t1 = 10, # hyper priors 
+            t2 = 2, # hyper priors 
+            T1 = 1/185) ## data precision
+
+NormalMean = "
+model {
+tau_t ~ dgamma(t1, t2)
+S ~ dgamma(s1,s2) # Prior on variance
+mu ~ dnorm(mu0,T1) # prior on the mean 
+for(i in 1:N){
+    X[i] ~ dnorm(Ex[time[i]] ,S) # data model
+}
+for(t in 1:NT){
+ Ex[t] <- mu + alpha_t[t]		  ## process model (does not vary with rep)
+ alpha_t[t] ~ dnorm(0,tau_t)  ## random year effect
+}
+ # all
+}
+"
+inits <- list()
+inits[[1]] <- list(mu = mean(mosquito$density))
+inits[[2]] <- list(mu = (1/2)*mean(mosquito$density))
+inits[[3]] <- list(mu = (1.5)*mean(mosquito$density))
+
+j.model   <- jags.model (file = textConnection(NormalMean),
+                             data = data,
+                             inits = inits,
+                             n.chains = 3)
+
+jags.out   <- coda.samples (model = j.model,
+                            variable.names = c("mu", "S", 'alpha_t', 'tau_t' ),
+                                n.iter = 45000)
+#gelman.diag(jags.out)
+
+GBR <- gelman.plot(jags.out)
+
+burnin = 34000                                ## determine convergence
+jags.burn <- window(jags.out,start=burnin)  ## remove burn-in
+plot(jags.burn)      
+
+acfplot(jags.burn)
+
+effectiveSize(jags.burn) # all over 5000 exept mu which is very close
+
+
+```
 4. When defining your `data` list to pass to JAGS, make sure to include the observed data, the indexing variable `time`, and any constants being used to define priors and the size of data sets (e.g. `N` and `NT`).
 
 5. When sampling from your posteriors, make sure to track all of your unknown parameters: 
@@ -52,7 +186,102 @@ Hint: once you convert the JAGS coda object to a matrix, you can use `grep` to f
 ```
 jags.mat <- as.matrix(jags.out)
 alpha <- jags.mat[,grep("alpha",colnames(jags.mat))]
+
 ```
+
+```{r}
+sigma = 5  ## prior standard deviation
+data = list(X = c(mosquito$density), ## data
+            N = 50,
+            time = as.numeric(as.factor(mosquito$time)), 
+            NT = 10, 
+            mu0 = 53, ## prior mean
+            s1 = sigma^2, ## prior precision
+            s2 = 2, 
+            #S = 1/27,
+            t1 = 10, # hyper priors 
+            t2 = 2, # hyper priors 
+            T1 = 1/185) ## data precision
+
+NormalMean = "
+model {
+tau_t ~ dgamma(t1, t2)
+S ~ dgamma(s1,s2) # Prior on variance
+mu ~ dnorm(mu0,T1) # prior on the mean 
+for(i in 1:N){
+    X[i] ~ dnorm(Ex[time[i]] ,S) # data model
+}
+for(t in 1:NT){
+ Ex[t] <- mu + alpha_t[t]		  ## process model (does not vary with rep)
+ alpha_t[t] ~ dnorm(0,tau_t)  ## random year effect
+}
+ # all
+}
+"
+inits <- list()
+inits[[1]] <- list(mu = mean(mosquito$density))
+inits[[2]] <- list(mu = (1/2)*mean(mosquito$density))
+inits[[3]] <- list(mu = (1.5)*mean(mosquito$density))
+
+j.model   <- jags.model (file = textConnection(NormalMean),
+                             data = data,
+                             inits = inits,
+                             n.chains = 3)
+
+jags.out   <- coda.samples (model = j.model,
+                            variable.names = c("mu", "S", 'alpha_t', 'tau_t' ),
+                                n.iter = 45000)
+burnin = 34000                                ## determine convergence
+jags.burn <- window(jags.out,start=burnin)  ## remove burn-in
+
+jags.mat <- as.matrix(jags.burn)
+alpha <- jags.mat[,grep("alpha",colnames(jags.mat))]
+
+
+for ( t in 1:10){
+  
+  ypred[] <- rnorm(npred,ycred[g,],1/sqrt(theta["S"]))
+}
+
+
+
+
+
+
+## credible and prediction intervals
+var.mat <- jags.mat
+nsamp <- 5000
+samp <- sample.int(nrow(var.mat),nsamp)
+xpred <- 0: length(mosquito$density) 					## sequence of x values we're going to
+npred <- length(xpred)				##      make predictions for
+ypred <- matrix(0.0,nrow=nsamp,ncol=npred)	## storage for predictive interval
+ycred <- matrix(0.0,nrow=nsamp,ncol=npred)	## storage for credible interval
+theta = var.mat[samp[g],]
+
+ycred_list <- list(ycred, ycred, ycred, ycred, ycred,ycred, ycred, ycred, ycred, ycred)
+ypred_list <- list(ypred, ypred, ypred, ypred, ypred,ypred, ypred, ypred, ypred, ypred)
+
+for(g in seq_len(nsamp)){
+  for(t in 1:10){
+    ycred[[t]][g,] <- alpha[t] + jags.out['mu']
+    ypred[[t]][g,] <- rnorm(npred,ycred[[t]][g,],1/sqrt(theta["S"]))
+  }
+  
+}
+
+ci <- apply(ycred,2,quantile,c(0.025,0.5,0.975))  ## credible interval and median
+pi <- apply(ypred,2,quantile,c(0.025,0.975))		## prediction interval
+
+plot(x1,y,cex=0.5,xlim=c(0,20),ylim=c(0,50))
+lines(xpred,ci[1,],col=3,lty=2)	## lower CI
+lines(xpred,ci[2,],col=3,lwd=3)	## median
+lines(xpred,ci[3,],col=3,lty=2)	## upper CI
+lines(xpred,pi[1,],col=4,lty=2)	## lower PI
+lines(xpred,pi[2,],col=4,lty=2)	## upper PI
+
+
+```
+
 5.	Based on the posterior mean estimates from this model, how much of the variance in the mosquito densities is explained by the year effects? Which parameters (and from which models) do you need to look at to assess this?
 
 6. Describe how you would modify your code to add a random `replicate` effect.

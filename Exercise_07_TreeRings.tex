@@ -1,0 +1,1405 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{}
+    \pretitle{\vspace{\droptitle}}
+  \posttitle{}
+    \author{}
+    \preauthor{}\postauthor{}
+    \date{}
+    \predate{}\postdate{}
+  
+
+\begin{document}
+
+\hypertarget{fusing-times-series-data-tree-rings-and-forest-inventory}{%
+\section{Fusing Times-Series Data: Tree Rings and Forest
+Inventory}\label{fusing-times-series-data-tree-rings-and-forest-inventory}}
+
+In this exercise we will extend the state-space framework to combine
+multiple data streams with different observation errors and to separate
+observation error from process error. We will also demonstrate how to
+add hierarchical random effects to partition the process error into
+multiple sources.
+
+Specifically, we will be building up to the model presented by Clark et
+al.~2007 Ecological Applications that combines tree ring data with
+forest inventory data. Unlike the original model, which was written all
+in R, we will rewrite this model into JAGS, which makes it easier to see
+what is going on and to modify the model. In this exercise we will
+utilize data from a collection of small plots at the Harvard Forest,
+Petersham, MA.
+
+We will divide this analysis into a number of steps, which we will
+encapsulate into functions to make them easier to understand and run.
+Thus we will begin by defining these functions. Specifically, the steps
+will be:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  load forest inventory data
+\item
+  load tree ring data
+\item
+  match the tree core and inventory data for individual trees and merge
+  these data sets into one data frame
+\item
+  format this data into a list for input into JAGS
+\item
+  run the JAGS model
+\item
+  visualize the output
+\end{enumerate}
+
+For steps 2-4 we will leverage functions already written to deal with
+these steps that are part of the \href{https://pecanproject.org}{PEcAn
+system}. Specifically, they are within PEcAn's land data R package,
+which can be downloaded and installed off Github using devtools
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{require}\NormalTok{(PEcAn.data.land))\{}
+  \KeywordTok{library}\NormalTok{(devtools)}
+  \KeywordTok{install.packages}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"digest"}\NormalTok{,}\StringTok{"dplR"}\NormalTok{,}\StringTok{"PeriodicTable"}\NormalTok{))}
+\NormalTok{  devtools}\OperatorTok{::}\KeywordTok{install_github}\NormalTok{(}\StringTok{"PecanProject/pecan/base/logger"}\NormalTok{)}
+\NormalTok{  devtools}\OperatorTok{::}\KeywordTok{install_github}\NormalTok{(}\StringTok{"PecanProject/pecan/base/remote"}\NormalTok{)}
+\NormalTok{  devtools}\OperatorTok{::}\KeywordTok{install_github}\NormalTok{(}\StringTok{"PecanProject/pecan/base/utils"}\NormalTok{)}
+\NormalTok{  devtools}\OperatorTok{::}\KeywordTok{install_github}\NormalTok{(}\StringTok{"PecanProject/pecan/base/db"}\NormalTok{)}
+\NormalTok{  devtools}\OperatorTok{::}\KeywordTok{install_github}\NormalTok{(}\StringTok{"PecanProject/pecan/modules/data.land"}\NormalTok{)}
+  \KeywordTok{require}\NormalTok{(PEcAn.data.land)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: PEcAn.data.land
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: datapack
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: dataone
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: package 'dataone' was built under R version 3.5.2
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: PEcAn.DB
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: PEcAn.utils
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'PEcAn.utils'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:utils':
+## 
+##     download.file
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: redland
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(rjags)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: coda
+\end{verbatim}
+
+\begin{verbatim}
+## Linked to JAGS 4.3.0
+\end{verbatim}
+
+\begin{verbatim}
+## Loaded modules: basemod,bugs
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(ecoforecastR)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(PEcAn.data.land)}
+\CommentTok{## 1. Read tree data}
+\NormalTok{trees <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"data/H2012AdultFieldData.csv"}\NormalTok{)}
+
+\CommentTok{## 2. Read tree ring data}
+\NormalTok{rings <-}\StringTok{ }\NormalTok{PEcAn.data.land}\OperatorTok{::}\KeywordTok{Read_Tucson}\NormalTok{(}\StringTok{"data/TUCSON/"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## There is 1 series
+## 1        S3C5369      1983    2012   0.001
+## There is 1 series
+## 1        S3C5375      1986    2012   0.001
+## There is 1 series
+## 1        S5A5271      1960    2012   0.001
+## There are 2 series
+## 1        B6A8534      1938    2012   0.001
+## 2        B6A8523      1936    2012   0.001
+## There are 2 series
+## 1        B6A8539      1888    2012   0.001
+## 2        V6B8568      1895    2012   0.001
+## There are 2 series
+## 1        B6B8567      1900    2012   0.001
+## 2        B6A8528      1892    2012   0.001
+## There are 12 series
+## 1        B3C6158      1901    2012   0.001
+## 2        B3C6065      1907    2012   0.001
+## 3        H1A1640      1963    2012   0.001
+## 4        B3D6164      1890    2012   0.001
+## 5        H6D1623      1958    2012   0.001
+## 6        H6B1545      1957    2012   0.001
+## 7        H1A1656      1996    2012   0.001
+## 8        S5D5297      1971    2012   0.001
+## 9        S5A5286      1976    2012   0.001
+## 10       B8C6001      1815    2012   0.001
+## 11       B3C6067      1925    2012   0.001
+## 12       B3C6086      1902    2012   0.001
+## There are 10 series
+## 1        B6A8526      1894    2012   0.001
+## 2        B6B8570      1878    2012   0.001
+## 3        H6A1507      1953    2012   0.001
+## 4        S3D5366      1964    2012   0.001
+## 5        B6A8537      1891    2012   0.001
+## 6        B6B8578      1883    2012   0.001
+## 7        H6B1542      1950    2012   0.001
+## 8        H1D1715      1959    2012   0.001
+## 9        H1B1693      1944    2012   0.001
+## 10       H6A1523      1965    2012   0.001
+## There are 2 series
+## 1        B6B8581      1936    2012   0.001
+## 2        B6B8580      1882    2012   0.001
+## There are 8 series
+## 1        B6B8584      1895    2012   0.001
+## 2        B6D8604      1910    2012   0.001
+## 3        B6A8530      1890    2012   0.001
+## 4        B6B8572      1914    2012   0.001
+## 5        B6A8524      1873    2012   0.001
+## 6        B6B8583      1902    2012   0.001
+## 7        B6A8536      1930    2012   0.001
+## 8        B6D8589      1885    2012   0.001
+## There are 2 series
+## 1        B6A8519      1893    2012   0.001
+## 2        B6D8590      1867    2012   0.001
+## There are 2 series
+## 1        B6D8593      1882    2012   0.001
+## 2        B6D8609      1883    2012   0.001
+## There are 2 series
+## 1        B6D8594      1892    2012   0.001
+## 2        B6D8606      1888    2012   0.001
+## There are 10 series
+## 1        B6D8595      1896    2012   0.001
+## 2        B6B8573      1948    2012   0.001
+## 3        B6D8603      1887    2012   0.001
+## 4        B6B8560      1894    2012   0.001
+## 5        H1B1701      1931    2012   0.001
+## 6        S3B5389      1978    2012   0.001
+## 7        B3D6171      1917    2012   0.001
+## 8        B3C6066      1912    2012   0.001
+## 9        B3B6194      1924    2012   0.001
+## 10       B3B6182      1967    2012   0.001
+## There are 10 series
+## 1        B6D8596      1923    2012   0.001
+## 2        B6D8605      1938    2012   0.001
+## 3        H1D1737      1957    2012   0.001
+## 4        H6A1527      1949    2012   0.001
+## 5        S3C5368      1953    2012   0.001
+## 6        H6A1514      1950    2012   0.001
+## 7        H1D1743      1961    2012   0.001
+## 8        H6A1501      1948    2012   0.001
+## 9        H1C1709      1960    2012   0.001
+## 10       H1D1754      1961    2012   0.001
+## There are 10 series
+## 1        B7D5736      1958    2012   0.001
+## 2        B7C5770      1961    2012   0.001
+## 3        B7C5762      1945    2012   0.001
+## 4        B7A5697      1930    2012   0.001
+## 5        B7B5831      1958    2012   0.001
+## 6        B7D5728      1890    2012   0.001
+## 7        B7A5699      1910    2012   0.001
+## 8        B7A5701      1934    2012   0.001
+## 9        B7A5709      1888    2012   0.001
+## 10       B7C5774      1899    2012   0.001
+## There are 9 series
+## 1        B6C8554      1875    2012   0.001
+## 2        B6C8552      1951    2012   0.001
+## 3        B8B5945      1930    2012   0.001
+## 4        B8B5894      1957    2012   0.001
+## 5        B6C8548      1884    2012   0.001
+## 6        B6C8544      1877    2012   0.001
+## 7        B3B6177      1910    2012   0.001
+## 8        B7D5739      1960    2012   0.001
+## 9        B7D5732      1964    2012   0.001
+## There are 10 series
+## 1        H1A1648      1959    2012   0.001
+## 2        H1B1703      1950    2012   0.001
+## 3        H1D1734      1961    2012   0.001
+## 4        H1D1761      1977    2012   0.001
+## 5        H6C1565      1985    2012   0.001
+## 6        H8B1559      1906    2012   0.001
+## 7        H6A1536      1953    2012   0.001
+## 8        H6A1532      1963    2012   0.001
+## 9        H6A1513      1931    2012   0.001
+## 10       H6C1577      1951    2012   0.001
+## There are 13 series
+## 1        H6A1525      1950    2012   0.001
+## 2        H1B1700      1917    2012   0.001
+## 3        S3B5386      1946    2012   0.001
+## 4        B6D8602      1891    2012   0.001
+## 5        S5A5289      1988    2012   0.001
+## 6        S5C5324      1955    2012   0.001
+## 7        H6A1528      1947    2012   0.001
+## 8        H1B1697      1927    2012   0.001
+## 9        H1B1689      1952    2012   0.001
+## 10       S3C5370      1968    2012   0.001
+## 11       S3C5376      1981    2012   0.001
+## 12       H6A1531      1962    2012   0.001
+## 13       H1A1636      1957    2012   0.001
+## There are 8 series
+## 1        H1C1721      1961    2012   0.001
+## 2        H6C1567      1947    2012   0.001
+## 3        H1B1704      1934    2012   0.001
+## 4        S3A5355      1921    2012   0.001
+## 5        H6D1620      1951    2012   0.001
+## 6        H6C1576      1952    2012   0.001
+## 7        H6B1557      1909    2012   0.001
+## 8        H6A1534      1952    2012   0.001
+## There are 14 series
+## 1        H6B1550      1969    2012   0.001
+## 2        H6A1535      1959    2012   0.001
+## 3        H8B0557      1968    2012   0.001
+## 4        H6D1622      1972    2012   0.001
+## 5        S6C5325      1987    2012   0.001
+## 6        S6A5273      1986    2012   0.001
+## 7        B6B8582      1921    2012   0.001
+## 8        B6D8597      1946    2012   0.001
+## 9        B6A8518      1943    2012   0.001
+## 10       B6B8569      1917    2012   0.001
+## 11       5516         1947    2012   0.001
+## 12       H1D1748      1964    2012   0.001
+## 13       5530         1968    2012   0.001
+## 14       H6A1526      1943    2012   0.001
+## There are 14 series
+## 1        B6D8610      1964    2012   0.001
+## 2        B6A8533      1927    2012   0.001
+## 3        5537         1941    2012   0.001
+## 4        5543         1947    2012   0.001
+## 5        B8C5998      1970    2012   0.001
+## 6        B3C6072      1956    2012   0.001
+## 7        H6C1570      1972    2012   0.001
+## 8        H6A1508      1948    2012   0.001
+## 9        B3A6029      1963    2012   0.001
+## 10       B3C6078      1958    2012   0.001
+## 11       B3C6C83      1908    2012   0.001
+## 12       B3B6181      1950    2012   0.001
+## 13       H6C1572      1952    2012   0.001
+## 14       H6D1619      1957    2012   0.001
+## There are 14 series
+## 1        H6A1502      1950    2012   0.001
+## 2        H6D1616      1971    2012   0.001
+## 3        S3A5356      1961    2012   0.001
+## 4        H6B1548      1967    2012   0.001
+## 5        H1A1644      1970    2012   0.001
+## 6        H1A1637      1975    2012   0.001
+## 7        H1D1751      1971    2012   0.001
+## 8        H1C1716      1969    2012   0.001
+## 9        B3D6162      1917    2012   0.001
+## 10       B3C6075      1948    2012   0.001
+## 11       5527         1969    2012   0.001
+## 12       5522         1962    2012   0.001
+## 13       H6A1517      1958    2012   0.001
+## 14       H6B1541      1953    2012   0.001
+## There are 14 series
+## 1        B6B8587      1987    2012   0.001
+## 2        B6B8579      1946    2012   0.001
+## 3        B6A8525      1897    2012   0.001
+## 4        B6A8529      1918    2012   0.001
+## 5        5544         1955    2012   0.001
+## 6        S5C5318      1980    2012   0.001
+## 7        S3A5357      1942    2012   0.001
+## 8        H6D1614      1952    2012   0.001
+## 9        S5A5285      1961    2012   0.001
+## 10       5519         1940    2012   0.001
+## 11       B6A8535      1948    2012   0.001
+## 12       B6A8522      1917    2012   0.001
+## 13       B6D8588      1907    2012   0.001
+## 14       B6D8608      1901    2012   0.001
+## There are 10 series
+## 1        5055         1950    2012   0.001
+## 2        5049         1920    2012   0.001
+## 3        B8A5858      1972    2012   0.001
+## 4        B8A5868      1979    2012   0.001
+## 5        5040         1954    2012   0.001
+## 6        5600         1950    2012   0.001
+## 7        5065         1951    2012   0.001
+## 8        5592         1901    2012   0.001
+## 9        B8A5850      1960    2012   0.001
+## 10       B8A5848      1939    2012   0.001
+## There are 2 series
+## 1        S5D5308      1987    2012   0.001
+## 2        S5C5316      1972    2012   0.001
+## There are 2 series
+## 1        5535         1882    2012   0.001
+## 2        S5D5298      1979    2012   0.001
+## There are 2 series
+## 1        S5A5291      1977    2012   0.001
+## 2        S5C5322      1970    2012   0.001
+## There are 2 series
+## 1        5542         1952    2012   0.001
+## 2        S5A5278      1984    2012   0.001
+## There are 2 series
+## 1        S5A5283      1964    2012   0.001
+## 2        S5D5309      1950    2012   0.001
+## There are 2 series
+## 1        H1C1715      1928    2012   0.001
+## 2        H1B1688      1917    2012   0.001
+## There are 2 series
+## 1        H1B1693      1944    2012   0.001
+## 2        H1A1647      1958    2012   0.001
+## There are 2 series
+## 1        H1C1710      1918    2012   0.001
+## 2        H6B1540      1909    2012   0.001
+## There are 2 series
+## 1        H1D1754      1961    2012   0.001
+## 2        H6C1566      1945    2012   0.001
+## There are 2 series
+## 1        H1B1705      1924    2012   0.001
+## 2        H1D1739      1949    2012   0.001
+## There are 2 series
+## 1        H1D1749      1957    2012   0.001
+## 2        H6A1506      1967    2012   0.001
+## There are 2 series
+## 1        H6B1552      1948    2012   0.001
+## 2        H6A1505      1953    2012   0.001
+## There are 2 series
+## 1        H6B1555      1944    2012   0.001
+## 2        H1D1750      1941    2012   0.001
+## There are 2 series
+## 1        H1D1760      1956    2012   0.001
+## 2        H6C1575      1959    2012   0.001
+## There are 2 series
+## 1        1698         1930    2012   0.001
+## 2        1736         1971    2012   0.001
+## There are 10 series
+## 1        5058         1947    2012   0.001
+## 2        5594         1910    2011   0.001
+## 3        B8A5852      1972    2012   0.001
+## 4        B8A5862      1959    2012   0.001
+## 5        5048         1947    2012   0.001
+## 6        5056         1955    2012   0.001
+## 7        5054         1960    2012   0.001
+## 8        5053         1941    2012   0.001
+## 9        B8A5844      1887    2012   0.001
+## 10       B8A5867      1947    2012   0.001
+## There are 8 series
+## 1        H7C5433      1974    2012   0.001
+## 2        H7C5451      1956    2012   0.001
+## 3        H7C5452      1950    2012   0.001
+## 4        H7C5458      1975    2012   0.001
+## 5        H7C5438      1958    2012   0.001
+## 6        H7C5455      1939    2012   0.001
+## 7        B7B5828      1962    2012   0.001
+## 8        B7D5738      1971    2012   0.001
+## There are 4 series
+## 1        B8A5858      1974    2012   0.001
+## 2        B8A5868      1980    2012   0.001
+## 3        B8A5848      1939    2012   0.001
+## 4        B8A5850      1948    2012   0.001
+## There are 6 series
+## 1        5065         1948    2012   0.001
+## 2        5592         1907    2012   0.001
+## 3        5040         1960    2012   0.001
+## 4        5600         1950    2012   0.001
+## 5        5055         1944    2012   0.001
+## 6        5049         1924    2012   0.001
+## There is 1 series
+## 1        B3D6166      1899    2012   0.001
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## 3. merge inventory and tree ring data, extract most recent nyears}
+\NormalTok{combined <-}\StringTok{ }\NormalTok{PEcAn.data.land}\OperatorTok{::}\KeywordTok{matchInventoryRings}\NormalTok{(trees,rings,}\DataTypeTok{nyears=}\DecValTok{15}\NormalTok{)}
+
+\CommentTok{## take a look at the first few rows of data to see the structure}
+\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(combined[}\DecValTok{1}\OperatorTok{:}\DecValTok{5}\NormalTok{,])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}llrlrlrlrrllllllrrrrrrrrrrrrrrr@{}}
+\toprule
+& SITE & PLOT & SUB & TAG & TREEID & NUM & SPP & X & Y & DATE11 & DBH11
+& DBH12 & DATE\_CORE\_COLLECTED11 & DATE12 & DATE\_CORE\_COLLECT12 &
+1998 & 1999 & 2000 & 2001 & 2002 & 2003 & 2004 & 2005 & 2006 & 2007 &
+2008 & 2009 & 2010 & 2011 & 2012\tabularnewline
+\midrule
+\endhead
+H6A1501 & H & 6 & A & 1501 & H6A1501 & 1 & PRSE2 & 1.2 & 0.6 & 7/10/11 &
+24.8 & 24.75 & 7/10/11 & 7/2/12 & 7/2/12 & 2.433 & 1.357 & 1.300 & 1.301
+& 1.108 & 1.303 & 0.870 & 0.951 & 1.319 & 1.431 & 1.253 & 1.381 & 1.107
+& 0.686 & 0.624\tabularnewline
+H6A1502 & H & 6 & A & 1502 & H6A1502 & 1 & ACRU & 0.2 & 2.0 & 7/10/11 &
+24.2 & 24.5 & 7/10/11 & 7/2/12 & 7/2/12 & 1.227 & 0.581 & 1.066 & 0.950
+& 1.387 & 0.917 & 1.084 & 1.824 & 1.513 & 2.099 & 2.066 & 1.603 & 0.744
+& 2.104 & 1.940\tabularnewline
+H6A1505 & H & 6 & A & 1505 & H6A1505 & 1 & ACRU & 3.9 & 3.4 & 7/10/11 &
+16.75 & 16.75 & 7/10/11 & 7/2/12 & 7/2/12 & 0.939 & 0.750 & 0.867 &
+0.656 & 0.457 & 0.822 & 0.529 & 0.698 & 0.381 & 0.465 & 0.233 & 0.433 &
+0.275 & 0.180 & 0.233\tabularnewline
+H6A1506 & H & 6 & A & 1506 & H6A1506 & 1 & BEAL2 & 5.7 & 3.2 & 7/10/11 &
+17.2 & 17.2 & 7/10/11 & 7/2/12 & 7/2/12 & 0.979 & 0.595 & 0.561 & 0.958
+& 0.821 & 0.765 & 0.804 & 0.635 & 1.143 & 0.485 & 0.825 & 0.439 & 1.028
+& 0.361 & 0.727\tabularnewline
+H6A1507 & H & 6 & A & 1507 & H6A1507 & 1 & TSCA & 8.2 & 5.5 & 7/10/11 &
+30.1 & 30.4 & 7/10/11 & 7/2/12 & 7/2/12 & 0.624 & 0.536 & 0.444 & 0.408
+& 0.272 & 0.720 & 0.519 & 1.842 & 1.701 & 1.749 & 1.344 & 1.373 & 1.277
+& 1.106 & 0.696\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## 4. organize data into a list}
+\NormalTok{data <-PEcAn.data.land}\OperatorTok{::}\KeywordTok{buildJAGSdata_InventoryRings}\NormalTok{(combined)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in `[.data.frame`(combined, , !
+## is.na(as.numeric(colnames(combined)))): NAs introduced by coercion
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# y = increment (tree x year)}
+\CommentTok{# z = dbh (tree x year)}
+\CommentTok{# make sure to take a look at all the priors!}
+\KeywordTok{str}\NormalTok{(data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## List of 13
+##  $ y     : num [1:80, 1:15] 0.487 0.245 0.188 0.196 0.125 ...
+##   ..- attr(*, "dimnames")=List of 2
+##   .. ..$ : chr [1:80] "H6A1501" "H6A1502" "H6A1505" "H6A1506" ...
+##   .. ..$ : chr [1:15] "1998" "1999" "2000" "2001" ...
+##  $ z     : num [1:80, 1:15] NA NA NA NA NA NA NA NA NA NA ...
+##  $ ni    : int 80
+##  $ nt    : int 15
+##  $ x_ic  : num 1
+##  $ tau_ic: num 1e-04
+##  $ a_dbh : num 16
+##  $ r_dbh : num 8
+##  $ a_inc : num 0.001
+##  $ r_inc : num 1
+##  $ a_add : num 1
+##  $ r_add : num 1
+##  $ time  : num [1:15] 1998 1999 2000 2001 2002 ...
+\end{verbatim}
+
+Now that we have the data prepped we need to fit the model itself. The
+bulk of this code is just the same JAGS syntax we've used before, so
+lets focus on the JAGS code itself. To begin with, lets look back at the
+JAGS code for the random walk
+
+\begin{verbatim}
+model{
+  
+  #### Data Model
+  for(i in 1:n){
+    y[i] ~ dnorm(x[i],tau_obs)
+  }
+  
+  #### Process Model
+  for(i in 2:n){
+    x[i]~dnorm(x[i-1],tau_add)
+  }
+  
+  #### Priors
+  x[1] ~ dnorm(x_ic,tau_ic)
+  tau_obs ~ dgamma(a_obs,r_obs)
+  tau_add ~ dgamma(a_add,r_add)
+}
+\end{verbatim}
+
+Since we're fusing two data sources, we'll need to add a second data
+model. We'll also modify our process model to include a mean growth rate
+term. Finally, we'll need to specify priors on both observation errors,
+the process error, and the mean.
+
+\begin{verbatim}
+model{
+
+  #### Data Model: DBH
+  for(i in 1:n){
+    z[i] ~ dnorm(x[i],tau_dbh)
+  }
+
+  #### Data Model: growth
+  for(i in 2:n){
+    inc[i] <- x[i]-x[i-1]
+    y[i] ~ dnorm(inc[i],tau_inc)
+  }
+
+  #### Process Model
+  #### Dnew is the expected new diameter given the previous diameter, x[i-1], and the mean growth rate, mu
+  for(i in 2:n){
+    Dnew[i] <- x[i-1] + mu  
+    x[i]~dnorm(Dnew[i],tau_add)
+  }
+
+  #### Priors
+  x[1] ~ dnorm(x_ic,tau_ic)     ## initial DBH
+  tau_dbh ~ dgamma(a_dbh,r_dbh) ## observation error: DBH
+  tau_inc ~ dgamma(a_inc,r_inc) ## observation error: tree rings
+  tau_add ~ dgamma(a_add,r_add) ## process error: growth
+  mu ~ dnorm(0.5,0.5)           ## mean growth
+}
+\end{verbatim}
+
+This code would work perfectly if we only had only measured a single
+tree, but we measured a number of trees so next need to modify the code
+to work with tree-by-year matrices of DBH and growth.
+
+\begin{verbatim}
+model{
+
+  ### Loop over all individuals
+  for(i in 1:ni){
+  
+    #### Data Model: DBH
+    for(t in 1:nt){
+      z[i,t] ~ dnorm(x[i,t],tau_dbh)
+    }
+  
+    #### Data Model: growth
+    for(t in 2:nt){
+      inc[i,t] <- x[i,t]-x[i,t-1]
+      y[i,t] ~ dnorm(inc[i,t],tau_inc)
+    }
+  
+    #### Process Model
+    for(t in 2:nt){
+      Dnew[i,t] <- x[i,t-1] + mu
+      x[i,t]~dnorm(Dnew[i,t],tau_add)
+    }
+  
+    x[i,1] ~ dnorm(x_ic,tau_ic)
+  }  ## end loop over individuals
+  
+  #### Priors
+  tau_dbh ~ dgamma(a_dbh,r_dbh)
+  tau_inc ~ dgamma(a_inc,r_inc)
+  tau_add ~ dgamma(a_add,r_add)
+  mu ~ dnorm(0.5,0.5)
+}
+\end{verbatim}
+
+Finally, since growth is indexed by both tree and year, lets add random
+effects for both individuals and years. In this case our process model
+now becomes
+
+\texttt{Dnew{[}i,t{]}\ \textless{}-\ x{[}i,t-1{]}\ +\ mu\ +\ ind{[}i{]}\ +\ year{[}t{]}}
+
+where \texttt{ind} and \texttt{year} are the random effects for
+individual and year respectively. Next, we'll need to specify the
+distributions that these random effects are drawn from, as well as the
+priors on the random effect variances
+
+\begin{verbatim}
+model{
+  
+### Loop over all individuals
+for(i in 1:ni){
+  
+  #### Data Model: DBH
+  for(t in 1:nt){
+    z[i,t] ~ dnorm(x[i,t],tau_dbh)
+  }
+  
+  #### Data Model: growth
+  for(t in 2:nt){
+    inc[i,t] <- x[i,t]-x[i,t-1]
+    y[i,t] ~ dnorm(inc[i,t],tau_inc)
+  }
+  
+  #### Process Model
+  for(t in 2:nt){
+    Dnew[i,t] <- x[i,t-1] + mu + ind[i] + year[t]
+    x[i,t]~dnorm(Dnew[i,t],tau_add)
+  }
+  
+  ## individual effects
+  ind[i] ~ dnorm(0,tau_ind)
+  
+  ## initial condition
+  x[i,1] ~ dnorm(x_ic,tau_ic)
+  
+}  ## end loop over individuals
+  
+  ## year effects
+  for(t in 1:nt){
+    year[t] ~ dnorm(0,tau_yr)
+  }
+  
+  
+  #### Priors
+  tau_dbh ~ dgamma(a_dbh,r_dbh)
+  tau_inc ~ dgamma(a_inc,r_inc)
+  tau_add ~ dgamma(a_add,r_add)
+  tau_ind ~ dgamma(1,0.1)
+  tau_yr  ~ dgamma(1,0.1)
+  mu ~ dnorm(0.5,0.5)
+  
+  }
+\end{verbatim}
+
+Putting this all together gives the following R code for the base case
+(no random effects)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n.iter =}\StringTok{ }\DecValTok{50000}                           \CommentTok{## INCREASE THIS NUMBER FOR ACTUAL ANALYSES **************************************}
+
+\CommentTok{## this code fuses forest inventory data with tree growth data (tree ring or dendrometer band)}
+\CommentTok{## for the same plots. Code is a rewrite of Clark et al 2007 Ecol Appl into JAGS}
+\NormalTok{TreeDataFusionMV =}\StringTok{ "}
+\StringTok{model\{}
+
+\StringTok{### Loop over all individuals}
+\StringTok{for(i in 1:ni)\{}
+\StringTok{  }
+\StringTok{  #### Data Model: DBH}
+\StringTok{  for(t in 1:nt)\{}
+\StringTok{  z[i,t] ~ dnorm(x[i,t],tau_dbh)}
+\StringTok{  \}}
+\StringTok{  }
+\StringTok{  #### Data Model: growth}
+\StringTok{  for(t in 2:nt)\{}
+\StringTok{  inc[i,t] <- x[i,t]-x[i,t-1]}
+\StringTok{  y[i,t] ~ dnorm(inc[i,t],tau_inc)}
+\StringTok{  \}}
+\StringTok{  }
+\StringTok{  #### Process Model}
+\StringTok{  for(t in 2:nt)\{}
+\StringTok{  Dnew[i,t] <- x[i,t-1] + mu}
+\StringTok{  x[i,t]~dnorm(Dnew[i,t],tau_add)}
+\StringTok{  \}}
+\StringTok{  }
+\StringTok{  x[i,1] ~ dnorm(x_ic,tau_ic)}
+
+\StringTok{\}  ## end loop over individuals}
+\StringTok{  }
+\StringTok{  #### Priors}
+\StringTok{  tau_dbh ~ dgamma(a_dbh,r_dbh)}
+\StringTok{  tau_inc ~ dgamma(a_inc,r_inc)}
+\StringTok{  tau_add ~ dgamma(a_add,r_add)}
+\StringTok{  mu ~ dnorm(0.5,0.5)}
+\StringTok{\}"}
+
+  \CommentTok{## state variable initial condition (subtract observed diameter increments off from the observed diameter)}
+\NormalTok{  z0 =}\StringTok{ }\KeywordTok{t}\NormalTok{(}\KeywordTok{apply}\NormalTok{(data}\OperatorTok{$}\NormalTok{y,}\DecValTok{1}\NormalTok{,}\ControlFlowTok{function}\NormalTok{(y)\{}\OperatorTok{-}\KeywordTok{rev}\NormalTok{(}\KeywordTok{cumsum}\NormalTok{(}\KeywordTok{rev}\NormalTok{(y)))\})) }\OperatorTok{+}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{z[,}\KeywordTok{ncol}\NormalTok{(data}\OperatorTok{$}\NormalTok{z)] }
+  
+  \CommentTok{## JAGS initial conditions}
+\NormalTok{  nchain =}\StringTok{ }\DecValTok{3}
+\NormalTok{  init <-}\StringTok{ }\KeywordTok{list}\NormalTok{()}
+  \ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{nchain)\{}
+\NormalTok{    y.samp =}\StringTok{ }\KeywordTok{sample}\NormalTok{(data}\OperatorTok{$}\NormalTok{y,}\KeywordTok{length}\NormalTok{(data}\OperatorTok{$}\NormalTok{y),}\DataTypeTok{replace=}\OtherTok{TRUE}\NormalTok{)}
+\NormalTok{    init[[i]] <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ z0,}\DataTypeTok{tau_add=}\KeywordTok{runif}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{5}\NormalTok{)}\OperatorTok{/}\KeywordTok{var}\NormalTok{(}\KeywordTok{diff}\NormalTok{(y.samp),}\DataTypeTok{na.rm=}\OtherTok{TRUE}\NormalTok{),}
+                      \DataTypeTok{tau_dbh=}\DecValTok{1}\NormalTok{,}\DataTypeTok{tau_inc=}\DecValTok{500}\NormalTok{,}\DataTypeTok{tau_ind=}\DecValTok{50}\NormalTok{,}\DataTypeTok{tau_yr=}\DecValTok{100}\NormalTok{,}\DataTypeTok{ind=}\KeywordTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{,data}\OperatorTok{$}\NormalTok{ni),}\DataTypeTok{year=}\KeywordTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{,data}\OperatorTok{$}\NormalTok{nt))}
+\NormalTok{  \}}
+  
+  \CommentTok{## compile JAGS model}
+\NormalTok{  j.model   <-}\StringTok{ }\KeywordTok{jags.model}\NormalTok{ (}\DataTypeTok{file =} \KeywordTok{textConnection}\NormalTok{(TreeDataFusionMV),}
+                           \DataTypeTok{data =}\NormalTok{ data,}
+                           \DataTypeTok{inits =}\NormalTok{ init,}
+                           \DataTypeTok{n.chains =} \DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in jags.model(file = textConnection(TreeDataFusionMV), data =
+## data, : Unused variable "time" in data
+\end{verbatim}
+
+\begin{verbatim}
+## Compiling model graph
+##    Resolving undeclared variables
+##    Allocating nodes
+## Graph information:
+##    Observed stochastic nodes: 1274
+##    Unobserved stochastic nodes: 2250
+##    Total graph size: 5855
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in jags.model(file = textConnection(TreeDataFusionMV), data =
+## data, : Unused initial value for "tau_ind" in chain 1
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in jags.model(file = textConnection(TreeDataFusionMV), data =
+## data, : Unused initial value for "tau_yr" in chain 1
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in jags.model(file = textConnection(TreeDataFusionMV), data =
+## data, : Unused initial value for "ind" in chain 1
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in jags.model(file = textConnection(TreeDataFusionMV), data =
+## data, : Unused initial value for "year" in chain 1
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in jags.model(file = textConnection(TreeDataFusionMV), data =
+## data, : Unused initial value for "tau_ind" in chain 2
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in jags.model(file = textConnection(TreeDataFusionMV), data =
+## data, : Unused initial value for "tau_yr" in chain 2
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in jags.model(file = textConnection(TreeDataFusionMV), data =
+## data, : Unused initial value for "ind" in chain 2
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in jags.model(file = textConnection(TreeDataFusionMV), data =
+## data, : Unused initial value for "year" in chain 2
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in jags.model(file = textConnection(TreeDataFusionMV), data =
+## data, : Unused initial value for "tau_ind" in chain 3
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in jags.model(file = textConnection(TreeDataFusionMV), data =
+## data, : Unused initial value for "tau_yr" in chain 3
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in jags.model(file = textConnection(TreeDataFusionMV), data =
+## data, : Unused initial value for "ind" in chain 3
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in jags.model(file = textConnection(TreeDataFusionMV), data =
+## data, : Unused initial value for "year" in chain 3
+\end{verbatim}
+
+\begin{verbatim}
+## Initializing model
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \CommentTok{## burn-in}
+\NormalTok{  jags.out   <-}\StringTok{ }\KeywordTok{coda.samples}\NormalTok{ (}\DataTypeTok{model =}\NormalTok{ j.model,}
+                              \DataTypeTok{variable.names =} \KeywordTok{c}\NormalTok{(}\StringTok{"tau_add"}\NormalTok{,}\StringTok{"tau_dbh"}\NormalTok{,}\StringTok{"tau_inc"}\NormalTok{,}\StringTok{"mu"}\NormalTok{,}\StringTok{"tau_ind"}\NormalTok{,}\StringTok{"tau_yr"}\NormalTok{),}
+                              \DataTypeTok{n.iter =} \KeywordTok{min}\NormalTok{(n.iter,}\DecValTok{20000}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in FUN(X[[i]], ...): Failed to set trace monitor for tau_ind
+## Variable tau_ind not found
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in FUN(X[[i]], ...): Failed to set trace monitor for tau_yr
+## Variable tau_yr not found
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \KeywordTok{plot}\NormalTok{(jags.out)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Exercise_07_TreeRings_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \CommentTok{## run MCMC}
+  \CommentTok{#jags.out   <- coda.samples (model = j.model,}
+  \CommentTok{#                            variable.names = c("x","tau_add","tau_dbh","tau_inc","mu",}
+  \CommentTok{#                                               "tau_ind","tau_yr","ind","year"),}
+  \CommentTok{#                            n.iter = n.iter)}
+\end{Highlighting}
+\end{Shaded}
+
+Next, lets generate some diagnostic plots to look at the model. First,
+lets plot the posterior CI for growth and DBH and compare these to
+observations. Since we have scores of cores and trees, we'll pick a
+random subset of trees to check. One thing that's critical to note is
+that for the confidence intervals on growth that these are calculated
+pathwise -- we're looking at the growth from a whole MCMC iteration --
+rather than pairwise (i.e.~subtracting the posterior distribution for
+DBH at one point from the posterior distribution of DBH at the next).
+Because there's high correlations between successive time points, the
+pathwise uncertainty estimates are considerably lower in uncertainty --
+essentially saying that we know can know the growth rate of the tree
+better than we can know the actual size of the tree
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \CommentTok{#### Diagnostic plots}
+  
+  \CommentTok{### DBH}
+  \CommentTok{#layout(matrix(1:8,4,2))}
+  \CommentTok{#out <- as.matrix(jags.out)}
+  
+\CommentTok{#  x.cols = which(substr(colnames(out),1,1)=="x")   ## which columns are the state variable, x}
+ \CommentTok{# ci <- apply(out[,x.cols],2,quantile,c(0.025,0.5,0.975))}
+ \CommentTok{# ci.names = PEcAn.data.land::parse.MatrixNames(colnames(ci),numeric=TRUE)}
+  
+ \CommentTok{# smp = c(sample.int(data$ni,3),49)  ## I've rigged the sampling to make sure you see tree 49!}
+\CommentTok{#  for(i in smp)\{}
+\CommentTok{#   sel = which(ci.names$row == i)}
+\CommentTok{#    plot(data$time,ci[2,sel],type='n',ylim=range(ci[,sel],na.rm=TRUE),ylab="DBH (cm)",main=i)}
+\CommentTok{#    ciEnvelope(data$time,ci[1,sel],ci[3,sel],col="lightBlue")}
+\CommentTok{#    points(data$time,data$z[i,],pch="+",cex=1.5)}
+\CommentTok{#  \}}
+  
+  \CommentTok{## growth}
+  \CommentTok{#for(i in smp)\{}
+ \CommentTok{#   sel = which(ci.names$row == i)}
+  \CommentTok{#  inc.mcmc = apply(out[,x.cols[sel]],1,diff)}
+  \CommentTok{#  inc.ci = apply(inc.mcmc,1,quantile,c(0.025,0.5,0.975))*5}
+  \CommentTok{#  }
+  \CommentTok{#  plot(data$time[-1],inc.ci[2,],type='n',ylim=range(inc.ci,na.rm=TRUE),ylab="Ring Increment (mm)")}
+  \CommentTok{#  ciEnvelope(data$time[-1],inc.ci[1,],inc.ci[3,],col="lightBlue")}
+  \CommentTok{#  points(data$time,data$y[i,]*5,pch="+",cex=1.5,type='b',lty=2)}
+  \CommentTok{#\}}
+\end{Highlighting}
+\end{Shaded}
+
+Second, let's look at the histogram of our fixed effect, mu, and the
+precisions. Let's also convert the precisions to standard deviations to
+make them easier to interpret
+
+Note: I had to comment these sections for knitting. I have yet to debug
+why.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \CommentTok{## process model}
+  \CommentTok{# vars = (1:ncol(out))[-c(which(substr(colnames(out),1,1)=="x"),grep("tau",colnames(out)),}
+  \CommentTok{#                         grep("year",colnames(out)),grep("ind",colnames(out)))]}
+  \CommentTok{# par(mfrow=c(1,1))}
+  \CommentTok{# for(i in vars)\{}
+  \CommentTok{#   hist(out[,i],main=colnames(out)[i])}
+  \CommentTok{# \}}
+  \CommentTok{# if(length(vars)>1) pairs(out[,vars])}
+  \CommentTok{# }
+  \CommentTok{# ## Standard Deviations}
+  \CommentTok{# par(mfrow=c(2,3))}
+  \CommentTok{# prec = out[,grep("tau",colnames(out))]}
+  \CommentTok{# for(i in 1:ncol(prec))\{}
+  \CommentTok{#   hist(1/sqrt(prec[,i]),main=colnames(prec)[i])}
+  \CommentTok{# \}}
+  \CommentTok{# cor(prec)}
+  \CommentTok{# pairs(prec)}
+\end{Highlighting}
+\end{Shaded}
+
+Third, let's look at the random effects. It is easy enough to plot the
+year effects by year. For the individual effects we'll plot these twice,
+first ordering the effects by plot and the second ordering them by
+species.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{out <-}\StringTok{ }\KeywordTok{as.matrix}\NormalTok{(jags.out)}
+  \KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+  \CommentTok{### YEAR}
+\NormalTok{  year.cols =}\StringTok{ }\KeywordTok{grep}\NormalTok{(}\StringTok{"year"}\NormalTok{,}\KeywordTok{colnames}\NormalTok{(out))}
+  \ControlFlowTok{if}\NormalTok{(}\KeywordTok{length}\NormalTok{(year.cols}\OperatorTok{>}\DecValTok{0}\NormalTok{))\{}
+\NormalTok{    ci.yr <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(out[,year.cols],}\DecValTok{2}\NormalTok{,quantile,}\KeywordTok{c}\NormalTok{(}\FloatTok{0.025}\NormalTok{,}\FloatTok{0.5}\NormalTok{,}\FloatTok{0.975}\NormalTok{))}
+    \KeywordTok{plot}\NormalTok{(data}\OperatorTok{$}\NormalTok{time,ci.yr[}\DecValTok{2}\NormalTok{,],}\DataTypeTok{type=}\StringTok{'n'}\NormalTok{,}\DataTypeTok{ylim=}\KeywordTok{range}\NormalTok{(ci.yr,}\DataTypeTok{na.rm=}\OtherTok{TRUE}\NormalTok{),}\DataTypeTok{main=}\StringTok{"Year Effect"}\NormalTok{,}\DataTypeTok{ylab=}\StringTok{"cm"}\NormalTok{)}
+    \KeywordTok{ciEnvelope}\NormalTok{(data}\OperatorTok{$}\NormalTok{time,ci.yr[}\DecValTok{1}\NormalTok{,],ci.yr[}\DecValTok{3}\NormalTok{,],}\DataTypeTok{col=}\StringTok{"lightBlue"}\NormalTok{)}
+    \KeywordTok{lines}\NormalTok{(data}\OperatorTok{$}\NormalTok{time,ci.yr[}\DecValTok{2}\NormalTok{,],}\DataTypeTok{lty=}\DecValTok{1}\NormalTok{,}\DataTypeTok{lwd=}\DecValTok{2}\NormalTok{)}
+    \KeywordTok{abline}\NormalTok{(}\DataTypeTok{h=}\DecValTok{0}\NormalTok{,}\DataTypeTok{lty=}\DecValTok{2}\NormalTok{)}
+\NormalTok{  \}}
+  
+  \CommentTok{### INDIV}
+\NormalTok{  ind.cols=}\StringTok{ }\KeywordTok{which}\NormalTok{(}\KeywordTok{substr}\NormalTok{(}\KeywordTok{colnames}\NormalTok{(out),}\DecValTok{1}\NormalTok{,}\DecValTok{3}\NormalTok{)}\OperatorTok{==}\StringTok{"ind"}\NormalTok{)}
+  \ControlFlowTok{if}\NormalTok{(}\KeywordTok{length}\NormalTok{(ind.cols)}\OperatorTok{>}\DecValTok{0}\NormalTok{)\{}
+    \KeywordTok{boxplot}\NormalTok{(out[,ind.cols],}\DataTypeTok{horizontal=}\OtherTok{TRUE}\NormalTok{,}\DataTypeTok{outline=}\OtherTok{FALSE}\NormalTok{,}\DataTypeTok{col=}\NormalTok{combined}\OperatorTok{$}\NormalTok{PLOT,}\DataTypeTok{main=}\StringTok{"Individual Effects By Plot"}\NormalTok{,}\DataTypeTok{xlab=}\StringTok{"cm"}\NormalTok{)}
+    \KeywordTok{abline}\NormalTok{(}\DataTypeTok{v=}\DecValTok{0}\NormalTok{,}\DataTypeTok{lty=}\DecValTok{2}\NormalTok{)}
+    \CommentTok{## calculate plot-level means for random effects}
+    \KeywordTok{tapply}\NormalTok{(}\KeywordTok{apply}\NormalTok{(out[,ind.cols],}\DecValTok{2}\NormalTok{,mean),combined}\OperatorTok{$}\NormalTok{PLOT,mean)}
+    \KeywordTok{table}\NormalTok{(combined}\OperatorTok{$}\NormalTok{PLOT)}
+    
+\NormalTok{    spp =}\StringTok{ }\NormalTok{combined}\OperatorTok{$}\NormalTok{SPP}
+    \KeywordTok{boxplot}\NormalTok{(out[}\KeywordTok{order}\NormalTok{(spp),ind.cols],}\DataTypeTok{horizontal=}\OtherTok{TRUE}\NormalTok{,}\DataTypeTok{outline=}\OtherTok{FALSE}\NormalTok{,}\DataTypeTok{col=}\NormalTok{spp[}\KeywordTok{order}\NormalTok{(spp)],}\DataTypeTok{main=}\StringTok{"Individual Effects By Species"}\NormalTok{,}\DataTypeTok{xlab=}\StringTok{"cm"}\NormalTok{)}
+    \KeywordTok{abline}\NormalTok{(}\DataTypeTok{v=}\DecValTok{0}\NormalTok{,}\DataTypeTok{lty=}\DecValTok{2}\NormalTok{)}
+\NormalTok{    spp.code =}\StringTok{ }\KeywordTok{levels}\NormalTok{(spp)[}\KeywordTok{table}\NormalTok{(spp)}\OperatorTok{>}\DecValTok{0}\NormalTok{]}
+    \KeywordTok{legend}\NormalTok{(}\StringTok{"bottomright"}\NormalTok{,}\DataTypeTok{legend=}\KeywordTok{rev}\NormalTok{(spp.code),}\DataTypeTok{col=}\KeywordTok{rev}\NormalTok{(}\KeywordTok{which}\NormalTok{(}\KeywordTok{table}\NormalTok{(spp)}\OperatorTok{>}\DecValTok{0}\NormalTok{)),}\DataTypeTok{lwd=}\DecValTok{4}\NormalTok{)}
+    \CommentTok{## calculate species-level means for random effects}
+    \KeywordTok{tapply}\NormalTok{(}\KeywordTok{apply}\NormalTok{(out[,ind.cols],}\DecValTok{2}\NormalTok{,mean),combined}\OperatorTok{$}\NormalTok{SPP,mean)}
+\NormalTok{  \}}
+\end{Highlighting}
+\end{Shaded}
+
+By default this code is set to run with a small number of years (15),
+and a much too low number of MCMC iterations (500), just so that the
+code with ``knit'' quickly initially. For your analyses you should
+obviously increase these -- I found that convergence was adequate with
+around 20,000 samples, though I probably would run 10x longer than that
+for a publishable analysis. However, such an analysis would take hours
+to run.
+
+Assignment:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Run the model initially with random effects off
+\item
+  Rerun the model with random effects on. Compare this to the previous
+  run. What is the relative partitioning of uncertainties in the
+  different versions of the model among observation error, process
+  error, and the different random effects? What does the size of these
+  effects suggest about the drivers of uncertainty in tree growth?
+\end{enumerate}
+
+\hypertarget{random-effects}{%
+\subsection{Random Effects}\label{random-effects}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n.iter =}\StringTok{ }\DecValTok{50000}                           \CommentTok{## INCREASE THIS NUMBER FOR ACTUAL ANALYSES **************************************}
+
+\CommentTok{## this code fuses forest inventory data with tree growth data (tree ring or dendrometer band)}
+\CommentTok{## for the same plots. Code is a rewrite of Clark et al 2007 Ecol Appl into JAGS}
+\NormalTok{TreeDataFusionMV_random =}\StringTok{ "}
+\StringTok{model\{}
+\StringTok{  }
+\StringTok{### Loop over all individuals}
+\StringTok{for(i in 1:ni)\{}
+\StringTok{  }
+\StringTok{  #### Data Model: DBH}
+\StringTok{  for(t in 1:nt)\{}
+\StringTok{    z[i,t] ~ dnorm(x[i,t],tau_dbh)}
+\StringTok{  \}}
+\StringTok{  }
+\StringTok{  #### Data Model: growth}
+\StringTok{  for(t in 2:nt)\{}
+\StringTok{    inc[i,t] <- x[i,t]-x[i,t-1]}
+\StringTok{    y[i,t] ~ dnorm(inc[i,t],tau_inc)}
+\StringTok{  \}}
+\StringTok{  }
+\StringTok{  #### Process Model}
+\StringTok{  for(t in 2:nt)\{}
+\StringTok{    Dnew[i,t] <- x[i,t-1] + mu + ind[i] + year[t]}
+\StringTok{    x[i,t]~dnorm(Dnew[i,t],tau_add)}
+\StringTok{  \}}
+\StringTok{  }
+\StringTok{  ## individual effects}
+\StringTok{  ind[i] ~ dnorm(0,tau_ind)}
+\StringTok{  }
+\StringTok{  ## initial condition}
+\StringTok{  x[i,1] ~ dnorm(x_ic,tau_ic)}
+\StringTok{  }
+\StringTok{\}  ## end loop over individuals}
+\StringTok{  }
+\StringTok{  ## year effects}
+\StringTok{  for(t in 1:nt)\{}
+\StringTok{    year[t] ~ dnorm(0,tau_yr)}
+\StringTok{  \}}
+\StringTok{  }
+\StringTok{  }
+\StringTok{  #### Priors}
+\StringTok{  tau_dbh ~ dgamma(a_dbh,r_dbh)}
+\StringTok{  tau_inc ~ dgamma(a_inc,r_inc)}
+\StringTok{  tau_add ~ dgamma(a_add,r_add)}
+\StringTok{  tau_ind ~ dgamma(1,0.1)}
+\StringTok{  tau_yr  ~ dgamma(1,0.1)}
+\StringTok{  mu ~ dnorm(0.5,0.5)}
+\StringTok{  }
+\StringTok{  \}}
+\StringTok{"}
+
+
+  \CommentTok{## state variable initial condition (subtract observed diameter increments off from the observed diameter)}
+\NormalTok{  z0 =}\StringTok{ }\KeywordTok{t}\NormalTok{(}\KeywordTok{apply}\NormalTok{(data}\OperatorTok{$}\NormalTok{y,}\DecValTok{1}\NormalTok{,}\ControlFlowTok{function}\NormalTok{(y)\{}\OperatorTok{-}\KeywordTok{rev}\NormalTok{(}\KeywordTok{cumsum}\NormalTok{(}\KeywordTok{rev}\NormalTok{(y)))\})) }\OperatorTok{+}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{z[,}\KeywordTok{ncol}\NormalTok{(data}\OperatorTok{$}\NormalTok{z)] }
+  
+  \CommentTok{## JAGS initial conditions}
+\NormalTok{  nchain =}\StringTok{ }\DecValTok{3}
+\NormalTok{  init <-}\StringTok{ }\KeywordTok{list}\NormalTok{()}
+  \ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{nchain)\{}
+\NormalTok{    y.samp =}\StringTok{ }\KeywordTok{sample}\NormalTok{(data}\OperatorTok{$}\NormalTok{y,}\KeywordTok{length}\NormalTok{(data}\OperatorTok{$}\NormalTok{y),}\DataTypeTok{replace=}\OtherTok{TRUE}\NormalTok{)}
+\NormalTok{    init[[i]] <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ z0,}\DataTypeTok{tau_add=}\KeywordTok{runif}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{5}\NormalTok{)}\OperatorTok{/}\KeywordTok{var}\NormalTok{(}\KeywordTok{diff}\NormalTok{(y.samp),}\DataTypeTok{na.rm=}\OtherTok{TRUE}\NormalTok{),}
+                      \DataTypeTok{tau_dbh=}\DecValTok{1}\NormalTok{,}\DataTypeTok{tau_inc=}\DecValTok{500}\NormalTok{,}\DataTypeTok{tau_ind=}\DecValTok{50}\NormalTok{,}\DataTypeTok{tau_yr=}\DecValTok{100}\NormalTok{,}\DataTypeTok{ind=}\KeywordTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{,data}\OperatorTok{$}\NormalTok{ni),}\DataTypeTok{year=}\KeywordTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{,data}\OperatorTok{$}\NormalTok{nt))}
+\NormalTok{  \}}
+  
+  \CommentTok{## compile JAGS model}
+\NormalTok{  j.model_random   <-}\StringTok{ }\KeywordTok{jags.model}\NormalTok{ (}\DataTypeTok{file =} \KeywordTok{textConnection}\NormalTok{(TreeDataFusionMV_random),}
+                           \DataTypeTok{data =}\NormalTok{ data,}
+                           \DataTypeTok{inits =}\NormalTok{ init,}
+                           \DataTypeTok{n.chains =} \DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in jags.model(file = textConnection(TreeDataFusionMV_random), data
+## = data, : Unused variable "time" in data
+\end{verbatim}
+
+\begin{verbatim}
+## Compiling model graph
+##    Resolving undeclared variables
+##    Allocating nodes
+## Graph information:
+##    Observed stochastic nodes: 1274
+##    Unobserved stochastic nodes: 2347
+##    Total graph size: 5955
+## 
+## Initializing model
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jags.out   <-}\StringTok{ }\KeywordTok{coda.samples}\NormalTok{ (}\DataTypeTok{model =}\NormalTok{ j.model_random,}
+                              \DataTypeTok{variable.names =} \KeywordTok{c}\NormalTok{(}\StringTok{"x"}\NormalTok{,}\StringTok{"tau_add"}\NormalTok{,}\StringTok{"tau_dbh"}\NormalTok{,}\StringTok{"tau_inc"}\NormalTok{,}\StringTok{"mu"}\NormalTok{,}
+                                                 \StringTok{"tau_ind"}\NormalTok{,}\StringTok{"tau_yr"}\NormalTok{,}\StringTok{"ind"}\NormalTok{,}\StringTok{"year"}\NormalTok{),}
+                              \DataTypeTok{n.iter =}\NormalTok{ n.iter)}
+
+\NormalTok{out <-}\StringTok{ }\KeywordTok{as.matrix}\NormalTok{(jags.out)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## process model}
+\NormalTok{  vars =}\StringTok{ }\NormalTok{(}\DecValTok{1}\OperatorTok{:}\KeywordTok{ncol}\NormalTok{(out))[}\OperatorTok{-}\KeywordTok{c}\NormalTok{(}\KeywordTok{which}\NormalTok{(}\KeywordTok{substr}\NormalTok{(}\KeywordTok{colnames}\NormalTok{(out),}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{)}\OperatorTok{==}\StringTok{"x"}\NormalTok{),}\KeywordTok{grep}\NormalTok{(}\StringTok{"tau"}\NormalTok{,}\KeywordTok{colnames}\NormalTok{(out)),}
+                          \KeywordTok{grep}\NormalTok{(}\StringTok{"year"}\NormalTok{,}\KeywordTok{colnames}\NormalTok{(out)),}\KeywordTok{grep}\NormalTok{(}\StringTok{"ind"}\NormalTok{,}\KeywordTok{colnames}\NormalTok{(out)))]}
+  \KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+  \ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in}\NormalTok{ vars)\{}
+    \KeywordTok{hist}\NormalTok{(out[,i],}\DataTypeTok{main=}\KeywordTok{colnames}\NormalTok{(out)[i])}
+\NormalTok{  \}}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Exercise_07_TreeRings_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \ControlFlowTok{if}\NormalTok{(}\KeywordTok{length}\NormalTok{(vars)}\OperatorTok{>}\DecValTok{1}\NormalTok{) }\KeywordTok{pairs}\NormalTok{(out[,vars])}
+
+  \CommentTok{## Standard Deviations}
+  \KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow=}\KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{))}
+\NormalTok{  prec =}\StringTok{ }\NormalTok{out[,}\KeywordTok{grep}\NormalTok{(}\StringTok{"tau"}\NormalTok{,}\KeywordTok{colnames}\NormalTok{(out))]}
+  \ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\KeywordTok{ncol}\NormalTok{(prec))\{}
+    \KeywordTok{hist}\NormalTok{(}\DecValTok{1}\OperatorTok{/}\KeywordTok{sqrt}\NormalTok{(prec[,i]),}\DataTypeTok{main=}\KeywordTok{colnames}\NormalTok{(prec)[i])}
+\NormalTok{  \}}
+  \KeywordTok{cor}\NormalTok{(prec)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##               tau_add       tau_dbh      tau_inc      tau_ind
+## tau_add  1.0000000000 -0.0009440753 -0.091367798 -0.003609262
+## tau_dbh -0.0009440753  1.0000000000  0.006015379  0.014555341
+## tau_inc -0.0913677981  0.0060153790  1.000000000 -0.016884497
+## tau_ind -0.0036092624  0.0145553408 -0.016884497  1.000000000
+## tau_yr   0.0002670326  0.0066373156 -0.000708491  0.008067777
+##                tau_yr
+## tau_add  0.0002670326
+## tau_dbh  0.0066373156
+## tau_inc -0.0007084910
+## tau_ind  0.0080677772
+## tau_yr   1.0000000000
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \KeywordTok{pairs}\NormalTok{(prec)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Exercise_07_TreeRings_files/figure-latex/unnamed-chunk-8-2.pdf}
+\includegraphics{Exercise_07_TreeRings_files/figure-latex/unnamed-chunk-8-3.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+  \CommentTok{### YEAR}
+\NormalTok{  year.cols =}\StringTok{ }\KeywordTok{grep}\NormalTok{(}\StringTok{"year"}\NormalTok{,}\KeywordTok{colnames}\NormalTok{(out))}
+  \ControlFlowTok{if}\NormalTok{(}\KeywordTok{length}\NormalTok{(year.cols}\OperatorTok{>}\DecValTok{0}\NormalTok{))\{}
+\NormalTok{    ci.yr <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(out[,year.cols],}\DecValTok{2}\NormalTok{,quantile,}\KeywordTok{c}\NormalTok{(}\FloatTok{0.025}\NormalTok{,}\FloatTok{0.5}\NormalTok{,}\FloatTok{0.975}\NormalTok{))}
+    \KeywordTok{plot}\NormalTok{(data}\OperatorTok{$}\NormalTok{time,ci.yr[}\DecValTok{2}\NormalTok{,],}\DataTypeTok{type=}\StringTok{'n'}\NormalTok{,}\DataTypeTok{ylim=}\KeywordTok{range}\NormalTok{(ci.yr,}\DataTypeTok{na.rm=}\OtherTok{TRUE}\NormalTok{),}\DataTypeTok{main=}\StringTok{"Year Effect"}\NormalTok{,}\DataTypeTok{ylab=}\StringTok{"cm"}\NormalTok{)}
+    \KeywordTok{ciEnvelope}\NormalTok{(data}\OperatorTok{$}\NormalTok{time,ci.yr[}\DecValTok{1}\NormalTok{,],ci.yr[}\DecValTok{3}\NormalTok{,],}\DataTypeTok{col=}\StringTok{"lightBlue"}\NormalTok{)}
+    \KeywordTok{lines}\NormalTok{(data}\OperatorTok{$}\NormalTok{time,ci.yr[}\DecValTok{2}\NormalTok{,],}\DataTypeTok{lty=}\DecValTok{1}\NormalTok{,}\DataTypeTok{lwd=}\DecValTok{2}\NormalTok{)}
+    \KeywordTok{abline}\NormalTok{(}\DataTypeTok{h=}\DecValTok{0}\NormalTok{,}\DataTypeTok{lty=}\DecValTok{2}\NormalTok{)}
+\NormalTok{  \}}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Exercise_07_TreeRings_files/figure-latex/unnamed-chunk-9-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \CommentTok{### INDIV}
+\NormalTok{  ind.cols=}\StringTok{ }\KeywordTok{which}\NormalTok{(}\KeywordTok{substr}\NormalTok{(}\KeywordTok{colnames}\NormalTok{(out),}\DecValTok{1}\NormalTok{,}\DecValTok{3}\NormalTok{)}\OperatorTok{==}\StringTok{"ind"}\NormalTok{)}
+  \ControlFlowTok{if}\NormalTok{(}\KeywordTok{length}\NormalTok{(ind.cols)}\OperatorTok{>}\DecValTok{0}\NormalTok{)\{}
+    \KeywordTok{boxplot}\NormalTok{(out[,ind.cols],}\DataTypeTok{horizontal=}\OtherTok{TRUE}\NormalTok{,}\DataTypeTok{outline=}\OtherTok{FALSE}\NormalTok{,}\DataTypeTok{col=}\NormalTok{combined}\OperatorTok{$}\NormalTok{PLOT,}\DataTypeTok{main=}\StringTok{"Individual Effects By Plot"}\NormalTok{,}\DataTypeTok{xlab=}\StringTok{"cm"}\NormalTok{)}
+    \KeywordTok{abline}\NormalTok{(}\DataTypeTok{v=}\DecValTok{0}\NormalTok{,}\DataTypeTok{lty=}\DecValTok{2}\NormalTok{)}
+    \CommentTok{## calculate plot-level means for random effects}
+    \KeywordTok{tapply}\NormalTok{(}\KeywordTok{apply}\NormalTok{(out[,ind.cols],}\DecValTok{2}\NormalTok{,mean),combined}\OperatorTok{$}\NormalTok{PLOT,mean)}
+    \KeywordTok{table}\NormalTok{(combined}\OperatorTok{$}\NormalTok{PLOT)}
+    
+\NormalTok{    spp =}\StringTok{ }\NormalTok{combined}\OperatorTok{$}\NormalTok{SPP}
+    \KeywordTok{boxplot}\NormalTok{(out[}\KeywordTok{order}\NormalTok{(spp),ind.cols],}\DataTypeTok{horizontal=}\OtherTok{TRUE}\NormalTok{,}\DataTypeTok{outline=}\OtherTok{FALSE}\NormalTok{,}\DataTypeTok{col=}\NormalTok{spp[}\KeywordTok{order}\NormalTok{(spp)],}\DataTypeTok{main=}\StringTok{"Individual Effects By Species"}\NormalTok{,}\DataTypeTok{xlab=}\StringTok{"cm"}\NormalTok{)}
+    \KeywordTok{abline}\NormalTok{(}\DataTypeTok{v=}\DecValTok{0}\NormalTok{,}\DataTypeTok{lty=}\DecValTok{2}\NormalTok{)}
+\NormalTok{    spp.code =}\StringTok{ }\KeywordTok{levels}\NormalTok{(spp)[}\KeywordTok{table}\NormalTok{(spp)}\OperatorTok{>}\DecValTok{0}\NormalTok{]}
+    \KeywordTok{legend}\NormalTok{(}\StringTok{"bottomright"}\NormalTok{,}\DataTypeTok{legend=}\KeywordTok{rev}\NormalTok{(spp.code),}\DataTypeTok{col=}\KeywordTok{rev}\NormalTok{(}\KeywordTok{which}\NormalTok{(}\KeywordTok{table}\NormalTok{(spp)}\OperatorTok{>}\DecValTok{0}\NormalTok{)),}\DataTypeTok{lwd=}\DecValTok{4}\NormalTok{)}
+    \CommentTok{## calculate species-level means for random effects}
+    \KeywordTok{tapply}\NormalTok{(}\KeywordTok{apply}\NormalTok{(out[,ind.cols],}\DecValTok{2}\NormalTok{,mean),combined}\OperatorTok{$}\NormalTok{SPP,mean)}
+\NormalTok{  \}}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Exercise_07_TreeRings_files/figure-latex/unnamed-chunk-9-2.pdf}
+\includegraphics{Exercise_07_TreeRings_files/figure-latex/unnamed-chunk-9-3.pdf}
+
+\begin{verbatim}
+##                    ACRU       ACSA3       BEAL2        BELE        BEPA 
+##          NA -0.10299326          NA -0.02234151 -0.08599241  0.01817535 
+##        BEUN        CADE        CATO        CAUN        FAGR        FRAM 
+##  0.14197114          NA          NA          NA  0.01815891          NA 
+##        HAVI        PIRE        PIRU        PIST       PRSE2        QUAL 
+##          NA          NA          NA  0.13272446 -0.03911547          NA 
+##        QURU        QUVE        TIAM        TSCA 
+##  0.02271075          NA -0.02599975  0.04287580
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Based on the diagnostics, propose an additional effect (fixed or
+  random) to add to the model. Such an effect should plausibly chip away
+  at a sizable fraction of the unexplained variability -- you wouldn't
+  want to propose an effect that isn't associated with systematic
+  variability.
+\end{enumerate}
+
+Looking at the effects of year, species, and plot, it seemed to mee that
+individual trees from both plot and species were growing a lot or
+``pulling away from the pack''. I woud want to know what was causing
+those individuals to do so well (Maybe soil, maybe position within the
+comminity (Competition?, a lack of competition? )). Because there seems
+to be an indivudual level effect, I would make it a fixed effect.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  Explain any additional exploratory analyses you would perform
+  (e.g.~plotting your proposed covariate against one of the random
+  effects).
+\end{enumerate}
+
+I would try to look at distance form edge, soil type, and some metric of
+competition or lack there of. I would probably plot it againts both plot
+and species, becuase I think that the individual-level effects show up
+in both. I would ask myself 'Do these covariates explain the varibility
+I see better than plot did or species did?".
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{4}
+\tightlist
+\item
+  Write the JAGS code that would fit the proposed model (note: you don't
+  have to run this model, just propose the code)
+\end{enumerate}
+
+TreeDataFusionMV\_tess = " model\{
+
+\hypertarget{loop-over-all-individuals}{%
+\subsubsection{Loop over all
+individuals}\label{loop-over-all-individuals}}
+
+for(i in 1:ni)\{
+
+\#\#\#\# Data Model: DBH for(t in 1:nt)\{ z{[}i,t{]} \textasciitilde{}
+dnorm(x{[}i,t{]},tau\_dbh) \}
+
+\#\#\#\# Data Model: growth for(t in 2:nt)\{ inc{[}i,t{]} \textless{}-
+x{[}i,t{]}-x{[}i,t-1{]} y{[}i,t{]} \textasciitilde{}
+dnorm(inc{[}i,t{]},tau\_inc) \}
+
+\#\#\#\# Process Model for(t in 2:nt)\{ Dnew{[}i,t{]} \textless{}-
+x{[}i,t-1{]} + mu + distance\_from\_edge{[}i{]} + year{[}t{]} \# Keeping
+year effect. Have yet to explain it.
+x{[}i,t{]}\textasciitilde{}dnorm(Dnew{[}i,t{]},tau\_add) \}
+
+\#\# individual effects by distance from edge
+distance\_from\_edge{[}i{]} \textasciitilde{}
+dnorm(dist\_data{[}i{]},tau\_dist) \# Still an effect with varibility,
+but informed by data
+
+\#\# initial condition x{[}i,1{]} \textasciitilde{} dnorm(x\_ic,tau\_ic)
+
+\} \#\# end loop over individuals
+
+\#\# year effects for(t in 1:nt)\{ year{[}t{]} \textasciitilde{}
+dnorm(0,tau\_yr) \}
+
+\#\#\#\# Priors tau\_dbh \textasciitilde{} dgamma(a\_dbh,r\_dbh)
+tau\_inc \textasciitilde{} dgamma(a\_inc,r\_inc) tau\_add
+\textasciitilde{} dgamma(a\_add,r\_add) tau\_dist \textasciitilde{}
+dgamma(1,0.1) \#\# Would make better priors probably tau\_yr
+\textasciitilde{} dgamma(1,0.1) mu \textasciitilde{} dnorm(0.5,0.5)
+
+\} "
+
+** BECAUSE THE PRODUCTION VERSION OF THIS CODE TAKES A LONG TIME TO RUN,
+PLEASE SUBMIT THE KNIT HTML NOT THE Rmd **
+
+
+\end{document}

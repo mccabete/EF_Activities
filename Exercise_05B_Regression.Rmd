@@ -144,7 +144,7 @@ And then we'll use the coda.samples function to sample from the posterior
 ```{r}
 var.out   <- coda.samples (model = j.model,
                             variable.names = c("beta","prec"),
-                                n.iter = 2000)
+                                n.iter = 4000)
 ```
 
 
@@ -168,10 +168,53 @@ cor(var.mat)    ## correlation matrix among model parameters
 
 ### Task 1
 * Evaluate the MCMC chain for convergence. Include relevant diagnostics and plots. Determine and remove burnin e.g. ```var.burn <- window(var.out,start=burnin)```
+```{r}
+## Based on Gelman plot, looks like post 500 convereged
+var.burn <- window(var.out,start=500)
+
+effectiveSize(var.burn) # Well over 5000
+```
 * Report parameter summary table and plot marginal distributions
+```{r}
+## convert to matrix
+var.mat      <- as.matrix(var.burn)
+
+## Summary table
+beta_1 <- summary(var.mat[,1])
+beta_2 <- summary(var.mat[,2])
+precision <- summary(var.mat[,3])
+
+sum_table <- cbind(beta_1, beta_2, precision)
+print(sum_table)
+## plotted marginal distributions
+plot(density(var.mat[,1]), main = "Beta 1")
+plot(density(var.mat[,2]), main = "Beta 2")
+plot(density(var.mat[,3]), main = "Precision")
+
+
+
+```
+
 * Describe and explain the parameter covariances that you observe in the pairs plot and parameter correlation matrix.
+
+Beta_1 and beta_2 are negativly correlated, based on the corelation coefficients and the correlation plot. The precision does not seems to be correlated to either of the betas. This sort of makes sense intuitivly. If you are trying to match a line to some data, you can get your intercept wrong and compensate with your slope, or get your slope wrong and compensate with your intercept. One effects the other. 
+
 * Compare the summary statistics for the Bayesian regression model to those from the classical regression:  summary(lm( y ~ x1 )).  This should include a comparison of the means and uncertainties of **all 3 model parameters**
+
+```{r}
+print("Bayes Summary")
+sum_table_bayes <- sum_table
+print(sum_table_bayes)
+
+print( "classical regression summary")
+regression <- lm( y ~ x1 )
+summary(lm( y ~ x1 ))
+
+```
+
 * Compare the fit parameters to the “true” parameters we used to generate the pseudo-data.  How well does the statistical analysis recover the true model?
+
+The "true" prarameters were: and intercept of 10, a slope of , and a standard deviation of 4 (Presicion of 1/(4^2) or 0.0624). The baysian regression was fraily accurate, returning a 2.08 for the slope, and a 0.061 for the precision. The intercept was consistantly underestimated. The classical regressional also returned a similar estimate of the slope (2.07) and an underestimate of the intercept. The precision/ standard error was also close: 4.042.
 
 # Regression Credible Intervals
 
@@ -252,8 +295,100 @@ Extend your univariate regression model to a multivariate regression.
 ###  Task 2
 
 * Show the JAGS and R code used.
+```{r}
+x3 <- (x1 * x2)
+data <- list(x1 = x1, x2 = x2, x3 = x3, y = y, n = n)
+
+multivariate_regression <- "
+model{
+
+  beta ~ dmnorm(b0,Vb)  	## multivariate Normal prior on vector of regression params
+  prec ~ dgamma(s1,s2)    ## prior precision
+
+  for(i in 1:n){
+	  mu[i] <- beta[1] + beta[2]*x1[i] + beta[3]*x2[i] +beta[4]*x3[i]   	## process model
+	  y[i]  ~ dnorm(mu[i],prec)		        ## data model
+  }
+}
+"
+
+## specify priors
+data$b0 <- as.vector(c(0,0,0,0))      ## regression beta means
+data$Vb <- solve(diag(10000,4))   ## regression beta precisions
+#data$b02 <- as.vector(c(0,0))      ## regression beta means
+#data$Vb2 <- solve(diag(10000,2))   ## regression beta precisions
+data$s1 <- 0.1                    ## error prior n/2
+data$s2 <- 0.1                    ## error prior SS/2
+
+
+
+## initial conditions
+nchain = 3
+inits <- list()
+for(i in 1:nchain){
+ inits[[i]] <- list(beta = rnorm(4,0,5), prec = runif(1,1/100,1/20))
+}
+
+j.model   <- jags.model(file = textConnection(multivariate_regression),
+                             data = data,
+                             inits = inits,
+                             n.chains = nchain)
+
+var.out   <- coda.samples (model = j.model,
+                            variable.names = c("beta","prec"),
+                                n.iter = 12000)
+```
+
 * Include relevant convergence diagnostics and plots. 
+```{r}
+## remember to assess convergence and remove burn-in before doing other diagnostics
+GBR <- gelman.plot(var.out)
+
+
+var.burn <- window(var.out,start=2000)
+
+effectiveSize(var.burn) # All babove 5000
+```
+
+```{r}
+
+## convert to matrix
+var.mat      <- as.matrix(var.burn)
+
+## Pairwise scatter plots & correlation
+pairs(var.mat)	## pairs plot to evaluate parameter correlation
+
+cor(var.mat)    ## correlation matrix among model parameters
+
+```
 * Report parameter summary table. 
 * Plot marginal and pairwise joint distributions. Indicate 'true' parameters on the plots
+```{r}
+
+## Summary table
+beta_1 <- summary(var.mat[,1])
+beta_2 <- summary(var.mat[,2])
+beta_3 <- summary(var.mat[,3])
+beta_4 <- summary(var.mat[,4])
+precision <- summary(var.mat[,5])
+
+sum_table <- cbind(beta_1, beta_2, beta_3, beta_4, precision)
+print(sum_table)
+
+## plotted marginal distributions
+plot(density(var.mat[,1]), main = "Beta 1")
+abline(v = 10)
+plot(density(var.mat[,2]), main = "Beta 2")
+abline(v = 2)
+plot(density(var.mat[,3]), main = "Beta 3")
+abline(v = -4)
+plot(density(var.mat[,4]), main = "Beta 4")
+abline(v = 0.5)
+plot(density(var.mat[,5]), main = "Precision")
+abline(v = (1/(4^2)))
+
+```
+
 * Compare the fit parameters to the “true” parameters we used to generate the pseudo-data.  How well does the statistical analysis recover the true model?
 
+We didn't recover the tru model perfectly. In almost every case, the central tendency of the distribution didn't exactly match the "true" value. (The exception is the relationship between the two covariates - that we were able to recover). In all cases, however, the the distribution included the "true" value. 

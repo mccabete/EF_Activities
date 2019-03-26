@@ -107,6 +107,7 @@ As noted earlier, we're going to take the fitting of this model to the data as a
 plot(out$params)
 summary(out$params)
 
+
 ## states  
 ci <- apply(as.matrix(out$predict),2,quantile,c(0.025,0.5,0.975))
 time = 1:NT
@@ -137,8 +138,14 @@ time2 = time1+NT   ## forecast period
 Before we get started with prediction, let's focus in on a single site to make the task a bit simpler. Because we'll want to display this site for all the different model runs we do let's create a simple function to encapsulate making the plot rather than cluttering our code with constant cut-and-paste redundance.
 
 ```{r}
-plot.run <- function(){
+plot.run <- function(main = NA){
   sel = seq(s,ncol(ci),by=NS)
+  if (!is.na(main)){
+    plot(time,time,type='n',ylim=ylim,ylab="N", main = main)
+    ecoforecastR::ciEnvelope(time1,ci[1,sel],ci[3,sel],col=col.alpha("lightBlue",0.6))
+  lines(time1,ci[2,sel],col="blue")
+  points(time1,No[s,])
+  }
   plot(time,time,type='n',ylim=ylim,ylab="N")
   ecoforecastR::ciEnvelope(time1,ci[1,sel],ci[3,sel],col=col.alpha("lightBlue",0.6))
   lines(time1,ci[2,sel],col="blue")
@@ -228,6 +235,8 @@ lines(time2,N.I.ci[2,],lwd=0.5)
 
 **Question 1:** Describe the pattern to the initial condition uncertainty and compare that to your expectations (e.g. Table 1).
 
+The initial condition uncertainty begins large, but than gets smaller as time goes on. This is consistant with the table's concept endogenous stability, which should either decay or increase exponentially. This suggests that the process is internally stable. I was surprsed how quickly ic uncertainty declided. 
+
 ### Parameter uncertainty
 
 Next, let's add parameter uncertainty to our forecast. To do this we'll want to sample the **joint** parameter posterior distribution using the row numbers as before. In this forecast we're still running `r Nmc` model runs, but now each run get's its own unique parameters _and_ it's own unique initial conditions. We expect the total uncertainty to increase, so we can layer the run both uncertainties on top of the run with just initial conditions to get a feel for how much more uncertainty is added when we incorporate parameter uncertainty.
@@ -254,7 +263,12 @@ lines(time2,N.I.ci[2,],lwd=0.5)
 
 **Question 2:** 
 A) Describe the pattern and relative magnitude of the parameter uncertainty and compare this to your expectations. 
+
+Parameter uncertainty is consistant throughout. I would expect that, unless there was intentional fusion of knowledge into the system. Right now the parameter uncertainty dominates the forecast. 
+
 B) Using the existing model and Monte Carlo approach, describe how you might partition the contribution of each parameter (r, Kg, alpha, beta) to the forecast uncertainty.
+
+I would iterativly re-run the model treating one parameter at a time as known. I would then look at how the reduction of the ci of each parameter's model-run itereation scales with the full model's parameter CI.
 
 ### Driver uncertainty
 
@@ -295,6 +309,8 @@ lines(time2,N.I.ci[2,],lwd=0.5)
 
 **Question 3:** As before, describe the pattern of how driver uncertainty contributes to the forecast and compare that to our first principles expectations.
 
+The driver uncertianty increases voer time, and dominates in the future. This is pretty consistant with the table. I am pretty surprised at how small the driver uncertainty is initially. 
+
 ### Process uncertainty
 
 Adding process error to the model looks similar to both older _stochastic_ modeling approachs and to the _residual_ error in statistical models. However, it is subtly distinct in a few important ways. First, unlike theoretical stochastic models, process error is estimated explictly by fitting models to data. Second, unlike residual error, when we estimate process error we partition it from the observation error. Thus the process error represents things in the process that the model is unable to capture (which will always occur because all models are approximations). The distinction between process and observation error is important because observation error only affects the current observation, but process error propagates into the future.
@@ -324,6 +340,8 @@ lines(time2,N.I.ci[2,],lwd=0.5)
 
 **Question 4:** Why might the relative contribution of the process error decline with time? Does this match expectations?
 
+I am surprised that it declines with time. It feels like the process error should compound over time, not decrease. I guess it's more that it remains reletivly constant, and over time driver uncertainty tends to grow. 
+
 ### Random Effect uncertainty
 
 The last figure above represent our best forecast if we're making an **in-sample** prediction (i.e. forecasting one of the sites that we have previously studied). However, if we are making an **out-of-sample** prediction to a new site then there is an additional source of uncertainty that needs to be considered -- the unexplained site-to-site variability being captured by the random effect. When we're making an in-sample prediction we use the posterior $\alpha$ associated with that specific site, but for a new site we need to move up a level in the hierarchical model and sample new alpha values using the across-site precision, $\tau_{site}$. While the out-of-sample forecast is going to have greater uncertainty (which makes intuitive sense and is a desirable feature), there's no guarantee that the in-sample prediction is within the predictive interval of the out-of-sample prediction because the focal site might have been above- or below-average relative to the across-site mean.
@@ -352,6 +370,7 @@ ecoforecastR::ciEnvelope(time2,N.IP.ci[1,],N.IP.ci[3,],col=col.alpha(N.cols[2],t
 ecoforecastR::ciEnvelope(time2,N.I.ci[1,],N.I.ci[3,],col=col.alpha(N.cols[1],trans))
 lines(time2,N.I.ci[2,],lwd=0.5)
 ```
+In this figure, site-site varibility really dominates. 
 
 # Uncertainty Analysis
 
@@ -389,6 +408,8 @@ legend("topleft",legend=c("Process","Driver","Parameter","InitCond"),col=rev(N.c
 
 **Question 5:**  Based on results, where would you focus your research efforts next if your aim was to improve out-of-sample predictions? What about in-sample predictions?
 
+If I wanted to do out-of-sample predictions, I would want to better constrain site-level variabiliy. I would try to narrow down what makes sites different (lattitude? management?), and maybe see if I could explain some varibililty. To improve in-sample redictions, I would want to focus on process error. What other covariates could I be excluding? 
+
 ## Next steps:
 
 The Monte Carlo approach to uncertainty propagation is very flexible and general, however for computationally demanding models it can also be limiting because of the large ensemble sizes required to approximate the full predictive distribution. As discussed in Chapter 11, there are alternative approaches that can be applied in these cases, but at the cost of additional assumptions and/or analytical complexity. We'd encourage you to explore how these other methods could be implemented for the above analysis:
@@ -397,9 +418,141 @@ The Monte Carlo approach to uncertainty propagation is very flexible and general
 The ensemble approach is very similar to the Monte Carlo approach but replaces the Monte Carlo approximation of the full predictive distribution with the approximation that the ensemble corresponds to a known probability distribution (e.g. Gaussian). Because it usually takes a much smaller sample size to get a stable estimate of a distribution's parameters (e.g. Gaussian mean and standard deviation), the size of the ensemble can be smaller provided the distributional assumption gives a good approximation. To implement the above analysis as an ensemble:
 
 * Change the lines that calculate predictive intervals using quantiles (e.g. `apply(N.*,2,quantile,c(0.025,0.5,0.975)))`) to instead calculate the mean and standard deviation
+
+```{r}
+## Ensemble estimate of IC  
+plot.run()
+N.I.mean = apply(N.I,2,mean)
+N.I.sd = apply(N.I,2,sd)
+ecoforecastR::ciEnvelope(time2,(N.I.mean + N.I.sd),(N.I.mean - N.I.sd),col=col.alpha(N.cols[1],trans))
+lines(time2,N.I.ci[2,],lwd=0.5)
+
+## Ensemble estimate of Parameter Uncertianty
+plot.run()
+N.IP.mean = apply(N.IP,2,mean)
+N.IP.sd = apply(N.IP,2,sd)
+ecoforecastR::ciEnvelope(time2,(N.IP.mean + N.IP.sd),(N.IP.mean - N.IP.sd),col=col.alpha(N.cols[2],trans))
+lines(time2,N.IP.ci[2,],lwd=0.5)
+
+## Ensemble estimate of Driver Uncertainty
+plot.run()
+N.IPD.mean = apply(N.IPD,2,mean)
+N.IPD.sd = apply(N.IPD,2,sd)
+ecoforecastR::ciEnvelope(time2,(N.IPD.mean + N.IPD.sd),(N.IPD.mean - N.IPD.sd),col=col.alpha(N.cols[3],trans))
+lines(time2,N.IPD.ci[2,],lwd=0.5)
+
+## Ensemble estimate of Process Uncertainty
+plot.run()
+N.IPDE.mean = apply(N.IPDE,2,mean)
+N.IPDE.sd = apply(N.IPDE,2,sd)
+ecoforecastR::ciEnvelope(time2,(N.IPDE.mean + N.IPDE.sd),(N.IPDE.mean - N.IPDE.sd),col=col.alpha(N.cols[4],trans))
+lines(time2,N.IPDE.ci[2,],lwd=0.5)
+
+## Ensemble estimate of random effect Uncertainty
+plot.run()
+N.IPDEA.mean = apply(N.IPDEA,2,mean)
+N.IPDEA.sd = apply(N.IPDEA,2,sd)
+ecoforecastR::ciEnvelope(time2,(N.IPDEA.mean + N.IPDEA.sd),(N.IPDEA.mean - N.IPDEA.sd),col=col.alpha(N.cols[5],trans))
+lines(time2,N.IPDEA.ci[2,],lwd=0.5)
+
+```
+
+
 * Then calculate the predictive interval using these statistics.
 * Compare the Gaussian approximation to the full Monte Carlo ensemble
+
+
+  Before I reduce the sample size, I can already see a difference. The assumption of a gaussian distribution really makes a difference for the driver uncertianty, and the random effects uncertainty. It both transforms the placement of the priductuve interval (Forces it to be lower especially for the random effects graph) and forces it to be smaller (especially for the driver uncertainty). Especially for the IC and parameter uncertianty, I almost couldn't tell the difference. 
+
+
 * Reduce the sample size, `Nmc`, by 10-50x and assess how the Gaussian approximation compares to the original and updated Monte Carlo estimates.
+
+## Reducing the sample size
+```{r}
+Nmc <- 20 # Was 1000
+
+N.little.I <- forecastN(IC=IC[prow,"N[6,30]"],  ## sample IC
+                   r=param.mean["r_global"],
+                   Kg=param.mean["K_global"],
+                   alpha=param.mean["alpha_site[6]"],
+                   beta=param.mean["beta"],
+                   ppt=ppt.mean,
+                   Q=0,
+                   n=Nmc)
+
+N.little.IP <- forecastN(IC=IC[prow,"N[6,30]"],  ## sample IC
+                   r=params[prow,"r_global"],  ## sample parameters
+                   Kg=params[prow,"K_global"],
+                   alpha=params[prow,"alpha_site[6]"],
+                   beta=params[prow,"beta"],
+                   ppt=ppt.mean,
+                   Q=0,
+                   n=Nmc)
+
+N.little.IPD <- forecastN(IC=IC[prow,"N[6,30]"],  ## sample IC
+                   r=params[prow,"r_global"],  ## sample parameters
+                   Kg=params[prow,"K_global"],
+                   alpha=params[prow,"alpha_site[6]"],
+                   beta=params[prow,"beta"],
+                   ppt=ppt_ensemble[drow,],   ## Sample drivers
+                   Q=0,
+                   n=Nmc)
+
+N.little.IPDE <- forecastN(IC=IC[prow,"N[6,30]"],  ## sample IC
+                   r=params[prow,"r_global"],  ## sample parameters
+                   Kg=params[prow,"K_global"],
+                   alpha=params[prow,"alpha_site[6]"],
+                   beta=params[prow,"beta"],
+                   ppt=ppt_ensemble[drow,],   ## Sample drivers
+                   Q=Qmc,
+                   n=Nmc)
+
+N.little.IPDEA <- forecastN(IC=IC[prow,"N[6,30]"],  ## sample IC
+                   r=params[prow,"r_global"],  ## sample parameters
+                   Kg=params[prow,"K_global"],
+                   alpha=aNew.mc,              ## sample random effect
+                   beta=params[prow,"beta"],
+                   ppt=ppt_ensemble[drow,],   ## Sample drivers
+                   Q=Qmc,
+                   n=Nmc)
+
+## Ensemble estimate of IC  
+plot.run()
+N.little.I.mean = apply(N.little.I,2,mean)
+N.little.I.sd = apply(N.little.I,2,sd)
+ecoforecastR::ciEnvelope(time2,(N.little.I.mean + N.little.I.sd),(N.little.I.mean - N.little.I.sd),col=col.alpha(N.cols[1],trans))
+lines(time2,N.I.ci[2,],lwd=0.5)
+
+## Ensemble estimate of Parameter Uncertianty
+plot.run()
+N.little.IP.mean = apply(N.little.IP,2,mean)
+N.little.IP.sd = apply(N.little.IP,2,sd)
+ecoforecastR::ciEnvelope(time2,(N.little.IP.mean + N.little.IP.sd),(N.little.IP.mean - N.little.IP.sd),col=col.alpha(N.cols[2],trans))
+lines(time2,N.IP.ci[2,],lwd=0.5)
+
+## Ensemble estimate of Driver Uncertainty
+plot.run()
+N.little.IPD.mean = apply(N.little.IPD,2,mean)
+N.little.IPD.sd = apply(N.little.IPD,2,sd)
+ecoforecastR::ciEnvelope(time2,(N.little.IPD.mean + N.little.IPD.sd),(N.little.IPD.mean - N.little.IPD.sd),col=col.alpha(N.cols[3],trans))
+lines(time2,N.IPD.ci[2,],lwd=0.5)
+
+## Ensemble estimate of Process Uncertainty
+plot.run()
+N.little.IPDE.mean = apply(N.little.IPDE,2,mean)
+N.little.IPDE.sd = apply(N.little.IPDE,2,sd)
+ecoforecastR::ciEnvelope(time2,(N.little.IPDE.mean + N.little.IPDE.sd),(N.little.IPDE.mean - N.little.IPDE.sd),col=col.alpha(N.cols[4],trans))
+lines(time2,N.IPDE.ci[2,],lwd=0.5)
+
+## Ensemble estimate of random effect Uncertainty
+plot.run()
+N.little.IPDEA.mean = apply(N.little.IPDEA,2,mean)
+N.little.IPDEA.sd = apply(N.little.IPDEA,2,sd)
+ecoforecastR::ciEnvelope(time2,(N.little.IPDEA.mean + N.little.IPDEA.sd),(N.little.IPDEA.mean - N.little.IPDEA.sd),col=col.alpha(N.cols[5],trans))
+lines(time2,N.IPDEA.ci[2,],lwd=0.5)
+```
+Wow. The uncertainty is totally underestimated. The difference, just between the high-N vs low-N ensemble methos is super stark for the parameter uncertainty, and the drivere uncertianty. In process uncertianty, it also looks like the "shape of the line" is also not as well captured. 
+
 
 **2) Analytical uncertainty propagation:**
 For even more computationally demanding problems, or problems where an analytical solution is desirable, it is also possibly to approximate the uncertainty propagation analytically:
